@@ -17,23 +17,23 @@ void InitPlayer(sf::CircleShape & player)
 	player.setPosition({100, 50});
 }
 
-void UpdatePlayer(sf::CircleShape & player)
+void UpdatePlayer(sf::CircleShape & player, sf::Int64 time)
 {
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) { 
 		if (player.getPosition().x > 0 + player.getGlobalBounds().width / 2)
 		{
-			player.move(-0.1f, 0);
+			player.move(-0.1f * time, 0);
 		}
 	};
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right)) { 
 		if (player.getPosition().x < 400 - player.getGlobalBounds().width / 2)
 		{
-			player.move(0.1f, 0);
+			player.move(0.1f * time, 0);
 		}
 	};
 	if (player.getPosition().y < 600 - player.getGlobalBounds().height / 2)
 	{
-		player.move(0, 0.1f);
+		player.move(0, 0.1f * time);
 	}
 }
 
@@ -49,9 +49,9 @@ struct Application
 		InitPlayer(player);
 	}
 
-	void Update()
+	void Update(sf::Int64 time)
 	{
-		UpdatePlayer(player);
+		UpdatePlayer(player, time);
 	}
 
 	void Draw()
@@ -75,11 +75,16 @@ int main()
 
 	app.InitApplication();
 
+	sf::Clock clock;
 	while (app.window.isOpen())
 	{
+		sf::Int64 time = clock.getElapsedTime().asMicroseconds();
+		clock.restart(); 
+		time = time / 600;
+
 		app.HandleEvents();
 
-		app.Update();
+		app.Update(time);
 
 		app.window.clear(sf::Color::White);
 
