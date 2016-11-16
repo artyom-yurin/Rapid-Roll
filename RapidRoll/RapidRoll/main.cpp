@@ -7,13 +7,20 @@ struct Collision
 	bool collisionLeft = false;
 };
 
+int GetRandomNumber(int min, int max)
+{
+	std::random_device rd;
+	std::mt19937 engine(rd());
+	std::uniform_int_distribution<int> uniform_dist(min, max);
+	return uniform_dist(engine);
+}
+
 sf::RectangleShape GeneratePlatform(sf::Vector2f & position, int & CountThorns)
 {
 	sf::RectangleShape platform;
 	sf::Vector2f size = {100, 10};
 	platform.setPosition(position);
 	platform.setSize(size);
-	platform.setOrigin(platform.getGlobalBounds().width / 2, platform.getGlobalBounds().height / 2);
 	if (CountThorns)
 	{
 		platform.setFillColor(sf::Color::Green);
@@ -22,7 +29,7 @@ sf::RectangleShape GeneratePlatform(sf::Vector2f & position, int & CountThorns)
 	else
 	{
 		platform.setFillColor(sf::Color::Red);
-		CountThorns = 4; //TODO: Random value
+		CountThorns = GetRandomNumber(1, 10);
 	}
 	return platform;
 }
@@ -79,21 +86,22 @@ Collision GetCollisions(sf::CircleShape & player, sf::RectangleShape(&platforms)
 	return currentCollision;
 }
 
-void InitPlayer(sf::CircleShape & player)
+void InitPlayer(sf::CircleShape & player, sf::Vector2f position)
 {
 	player.setRadius(15);
 	player.setFillColor(sf::Color::Red);
 	player.setOrigin(player.getGlobalBounds().width / 2, player.getGlobalBounds().height / 2);
-	player.setPosition({200, 50});
+	position += {100 / 2, -(player.getGlobalBounds().height / 2)};
+	player.setPosition(position);
 }
 
 void InitMap(sf::RectangleShape(&platforms)[10], int & CountThorns)
 {
-	CountThorns = 4;
+	CountThorns = GetRandomNumber(2, 10);
 	for (int i = 0; i < 10; ++i)
 	{
 		sf::Vector2f position;
-		position.x = 200.0; //TODO: Random value
+		position.x = (float)GetRandomNumber(0, 300); //TODO: Random value
 		position.y = (float)100.0 * (i + 1); //TODO: I don't know
 		platforms[i] = GeneratePlatform(position, CountThorns);
 	}
@@ -131,7 +139,7 @@ struct Application
 	{
 		InitWindow(window);
 		InitMap(platforms, CountThorns);
-		InitPlayer(player);
+		InitPlayer(player, platforms[0].getPosition());
 	}
 
 	void Update(sf::Int64 time)
