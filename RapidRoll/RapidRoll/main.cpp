@@ -1,5 +1,12 @@
 #include "stdafx.h"
 
+struct Collision
+{
+	bool collisionDown = false;
+	bool collisionRight = false;
+	bool collisionLeft = false;
+};
+
 sf::RectangleShape GeneratePlatform(sf::Vector2f & position, int & CountThorns)
 {
 	sf::RectangleShape platform;
@@ -34,28 +41,9 @@ void InitWindow(sf::RenderWindow & window)
 	window.create(sf::VideoMode(screenWidth, screenHeight), "Rapid Roll", sf::Style::Close, settings);
 }
 
-void InitPlayer(sf::CircleShape & player)
+Collision GetCollisions(sf::CircleShape & player, sf::RectangleShape(&platforms)[10])
 {
-	player.setRadius(15);
-	player.setFillColor(sf::Color::Red);
-	player.setOrigin(player.getGlobalBounds().width / 2, player.getGlobalBounds().height / 2);
-	player.setPosition({100, 50});
-}
-
-void InitMap(sf::RectangleShape(&platforms)[10], int & CountThorns)
-{
-	CountThorns = 4;
-	for (int i = 0; i < 10; ++i)
-	{
-		sf::Vector2f position;
-		position.x = 100.0; //TODO: Random value
-		position.y = (float)100.0 * (i + 1); //TODO: I don't know
-		platforms[i] = GeneratePlatform(position, CountThorns);
-	}
-}
-
-bool GetCollisionUp(sf::CircleShape & player, sf::RectangleShape (&platforms)[10])
-{
+	Collision currentCollision;
 	for (sf::RectangleShape platform : platforms)
 	{
 		if ((platform.getGlobalBounds().left <= player.getGlobalBounds().left + player.getGlobalBounds().width / 2) &&
@@ -64,28 +52,68 @@ bool GetCollisionUp(sf::CircleShape & player, sf::RectangleShape (&platforms)[10
 			(platform.getGlobalBounds().top + platform.getGlobalBounds().height >= player.getGlobalBounds().top + player.getGlobalBounds().height)
 			)
 		{
-			return true;
+			currentCollision.collisionDown = true;
+		}
+
+		if ((platform.getGlobalBounds().left <= player.getGlobalBounds().left + player.getGlobalBounds().width) &&
+			(platform.getGlobalBounds().left >= player.getGlobalBounds().left + player.getGlobalBounds().width / 2) &&
+			(((platform.getGlobalBounds().top >= player.getGlobalBounds().top) && (platform.getGlobalBounds().top + platform.getGlobalBounds().height <= player.getGlobalBounds().top + player.getGlobalBounds().height)) ||
+			((platform.getGlobalBounds().top <= player.getGlobalBounds().top) && (platform.getGlobalBounds().top + platform.getGlobalBounds().height >= player.getGlobalBounds().top)) ||
+			((platform.getGlobalBounds().top <= player.getGlobalBounds().top + player.getGlobalBounds().height) && (platform.getGlobalBounds().top + platform.getGlobalBounds().height >= player.getGlobalBounds().top + player.getGlobalBounds().height)))
+			)
+		{
+			currentCollision.collisionRight = true;
+		}
+
+		if ((platform.getGlobalBounds().left + platform.getGlobalBounds().width >= player.getGlobalBounds().left) &&
+			(platform.getGlobalBounds().left + platform.getGlobalBounds().width <= player.getGlobalBounds().left + player.getGlobalBounds().width / 2) &&
+			(((platform.getGlobalBounds().top >= player.getGlobalBounds().top) && (platform.getGlobalBounds().top + platform.getGlobalBounds().height <= player.getGlobalBounds().top + player.getGlobalBounds().height)) ||
+			((platform.getGlobalBounds().top <= player.getGlobalBounds().top) && (platform.getGlobalBounds().top + platform.getGlobalBounds().height >= player.getGlobalBounds().top)) ||
+			((platform.getGlobalBounds().top <= player.getGlobalBounds().top + player.getGlobalBounds().height) && (platform.getGlobalBounds().top + platform.getGlobalBounds().height >= player.getGlobalBounds().top + player.getGlobalBounds().height)))
+			)
+		{
+			currentCollision.collisionLeft = true;
 		}
 	}
 
-	return false;
+	return currentCollision;
 }
 
-void UpdatePlayer(sf::CircleShape & player, bool hasCollision, sf::Int64 & time)
+void InitPlayer(sf::CircleShape & player)
+{
+	player.setRadius(15);
+	player.setFillColor(sf::Color::Red);
+	player.setOrigin(player.getGlobalBounds().width / 2, player.getGlobalBounds().height / 2);
+	player.setPosition({200, 50});
+}
+
+void InitMap(sf::RectangleShape(&platforms)[10], int & CountThorns)
+{
+	CountThorns = 4;
+	for (int i = 0; i < 10; ++i)
+	{
+		sf::Vector2f position;
+		position.x = 200.0; //TODO: Random value
+		position.y = (float)100.0 * (i + 1); //TODO: I don't know
+		platforms[i] = GeneratePlatform(position, CountThorns);
+	}
+}
+
+void UpdatePlayer(sf::CircleShape & player, Collision & collisions, sf::Int64 & time)
 {
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) { 
-		if (player.getPosition().x > 0 + player.getGlobalBounds().width / 2)
+		if (player.getPosition().x > player.getGlobalBounds().width / 2 && !collisions.collisionLeft)
 		{
 			player.move(-0.1f * time, 0);
 		}
 	};
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right)) { 
-		if (player.getPosition().x < 400 - player.getGlobalBounds().width / 2)
+		if (player.getPosition().x < 400 - player.getGlobalBounds().width / 2 && !collisions.collisionRight)
 		{
 			player.move(0.1f * time, 0);
 		}
 	};
-	if (player.getPosition().y < 600 - player.getGlobalBounds().height / 2 && !hasCollision)
+	if (player.getPosition().y < 600 - player.getGlobalBounds().height / 2 && !collisions.collisionDown)
 	{
 		player.move(0, 0.1f * time);
 	}
@@ -108,7 +136,7 @@ struct Application
 
 	void Update(sf::Int64 time)
 	{
-		UpdatePlayer(player, GetCollisionUp(player, platforms), time);
+		UpdatePlayer(player, GetCollisions(player, platforms), time);
 		UpdateMap(platforms, time);
 	}
 
