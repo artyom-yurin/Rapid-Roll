@@ -16,7 +16,7 @@ void InitPlayer(sf::CircleShape & player, sf::Vector2f position)
 	player.setRadius(15);
 	player.setFillColor(sf::Color::Red);
 	player.setOrigin(player.getGlobalBounds().width / 2, player.getGlobalBounds().height / 2);
-	position += {100 / 2, -(player.getGlobalBounds().height / 2)};
+	position += {0, -(player.getGlobalBounds().height / 2)};
 	player.setPosition(position);
 }
 
