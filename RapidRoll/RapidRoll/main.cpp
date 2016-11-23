@@ -20,15 +20,51 @@ void InitPlayer(sf::CircleShape & player, sf::Vector2f position)
 	player.setPosition(position);
 }
 
-void UpdatePlayer(sf::CircleShape & player, Collision & collisions, sf::Int64 & time, float & platformSpeed)
+void UpdatePlayer(sf::CircleShape & player, sf::Int64 & time, float & platformSpeed, int & lives, sf::RectangleShape(&platforms)[10])
 {
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) { 
-		if (player.getPosition().x > player.getGlobalBounds().width / 2 && !collisions.collisionLeft)
+	Collision collisions = GetCollisions(player, platforms);
+
+	if (collisions.platformIndex != -1)
+	{
+		if (platforms[collisions.platformIndex].getFillColor() == sf::Color::Red)
 		{
-			player.move(-0.1f * time, 0);
+			--lives;
+			int startIndexPlatform = collisions.platformIndex;
+			if (startIndexPlatform + 1 == 10)
+			{
+				startIndexPlatform -= 1;
+			}
+			else
+			{
+				startIndexPlatform += 1;
+			}
+			InitPlayer(player, platforms[startIndexPlatform].getPosition());
 		}
+	}
+
+	if (collisions.collisionExtreme)
+	{
+		--lives;
+		int startIndexPlatform = -1;
+		int i = 0;
+		while (startIndexPlatform == -1)
+		{
+			if (platforms[i].getGlobalBounds().top > 200 && platforms[i].getFillColor() != sf::Color::Red)
+			{
+				startIndexPlatform = i;
+			}
+			++i;
+		}
+		InitPlayer(player, platforms[startIndexPlatform].getPosition());
+	}
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) 
+	{
+		if (player.getPosition().x > player.getGlobalBounds().width / 2 && !collisions.collisionLeft)
+			{
+				player.move(-0.1f * time, 0);
+			}
 	};
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right)) { 
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right)) {
 		if (player.getPosition().x < 400 - player.getGlobalBounds().width / 2 && !collisions.collisionRight)
 		{
 			player.move(0.1f * time, 0);
@@ -38,7 +74,7 @@ void UpdatePlayer(sf::CircleShape & player, Collision & collisions, sf::Int64 & 
 	{
 		player.move(0, platformSpeed * time);
 	}
-	else if (player.getPosition().y < 600 - player.getGlobalBounds().height / 2)
+	else
 	{
 		player.move(0, 0.1f * time);
 	}
@@ -49,20 +85,22 @@ struct Application
 	sf::RenderWindow window;
 	sf::CircleShape player;
 	int countThorns;
+	int lives = 3;
 	float platformSpeed;
 	sf::RectangleShape platforms[10];
+	sf::RectangleShape ceiling;
 	sf::Event event;
 
 	void InitApplication()
 	{
 		InitWindow(window);
-		InitMap(platforms, countThorns, platformSpeed);
+		InitMap(platforms, countThorns, platformSpeed, ceiling);
 		InitPlayer(player, platforms[0].getPosition());
 	}
 
 	void Update(sf::Int64 time)
 	{
-		UpdatePlayer(player, GetCollisions(player, platforms), time, platformSpeed);
+		UpdatePlayer(player, time, platformSpeed, lives, platforms);
 		UpdateMap(platforms, time, platformSpeed, countThorns);
 	}
 
@@ -72,6 +110,7 @@ struct Application
 		{
 			window.draw(platform);
 		}
+		window.draw(ceiling);
 		window.draw(player);
 	}
 
@@ -94,13 +133,16 @@ int main()
 	sf::Clock clock;
 	while (app.window.isOpen())
 	{
-		sf::Int64 time = clock.getElapsedTime().asMicroseconds();
-		clock.restart(); 
-		time = time / 600;
-
 		app.HandleEvents();
 
-		app.Update(time);
+		if (app.lives)
+		{
+			sf::Int64 time = clock.getElapsedTime().asMicroseconds();
+			clock.restart();
+			time = time / 600;
+
+			app.Update(time);
+		}
 
 		app.window.clear(sf::Color::White);
 

@@ -4,6 +4,7 @@
 Collision GetCollisions(sf::CircleShape & player, sf::RectangleShape(&platforms)[10])
 {
 	Collision currentCollision;
+	int i = 0;
 	for (sf::RectangleShape platform : platforms)
 	{
 		if ((platform.getGlobalBounds().left <= player.getGlobalBounds().left + player.getGlobalBounds().width / 2) &&
@@ -13,6 +14,7 @@ Collision GetCollisions(sf::CircleShape & player, sf::RectangleShape(&platforms)
 			)
 		{
 			currentCollision.collisionDown = true;
+			currentCollision.platformIndex = i;
 		}
 
 		if ((platform.getGlobalBounds().left <= player.getGlobalBounds().left + player.getGlobalBounds().width) &&
@@ -34,6 +36,11 @@ Collision GetCollisions(sf::CircleShape & player, sf::RectangleShape(&platforms)
 		{
 			currentCollision.collisionLeft = true;
 		}
+		if (player.getGlobalBounds().top < 30 || player.getGlobalBounds().top > 600)
+		{
+			currentCollision.collisionExtreme = true;
+		}
+		++i;
 	}
 
 	return currentCollision;

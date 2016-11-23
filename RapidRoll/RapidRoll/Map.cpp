@@ -28,15 +28,19 @@ sf::RectangleShape GeneratePlatform(sf::Vector2f & position, int & CountThorns)
 	return platform;
 }
 
-void InitMap(sf::RectangleShape(&platforms)[10], int & CountThorns, float & platformSpeed)
+void InitMap(sf::RectangleShape(&platforms)[10], int & CountThorns, float & platformSpeed, sf::RectangleShape & ceiling)
 {
 	CountThorns = GetRandomNumber(2, 10);
+	ceiling.setPosition(0, 0);
+	sf::Vector2f ceilingSize = {400, 30};
+	ceiling.setSize(ceilingSize);
+	ceiling.setFillColor(sf::Color::Red);
 	platformSpeed = -0.1f;
 	for (int i = 0; i < 10; ++i)
 	{
 		sf::Vector2f position;
-		position.x = (float)GetRandomNumber(50, 250); //TODO: Random value
-		position.y = (float)100 * (i + 1); //TODO: I don't know
+		position.x = (float)GetRandomNumber(0, 300); //TODO: Random value
+		position.y = (float)200 + 100 * (i + 1);
 		platforms[i] = GeneratePlatform(position, CountThorns);
 	}
 }
@@ -54,7 +58,7 @@ void UpdateMap(sf::RectangleShape(&platforms)[10], sf::Int64 & time, float & pla
 			platforms[i - 1] = platforms[i];
 		}
 		sf::Vector2f position;
-		position.x = (float)GetRandomNumber(50, 250);
+		position.x = (float)GetRandomNumber(0, 300);
 		position.y = (float)100 * 9;
 		platforms[9] = GeneratePlatform(position, countThorns);
 	}
