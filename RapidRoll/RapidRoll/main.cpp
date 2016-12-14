@@ -1,99 +1,66 @@
 #include "stdafx.h"
 #include "Collision.h"
 #include "Map.h"
+#include "Player.h"
 
-void InitWindow(sf::RenderWindow & window)
+void InitFont(sf::Font & font)
 {
-	const int screenWidth = 400;
-	const int screenHeight = 600;
-	sf::ContextSettings settings;
-	settings.antialiasingLevel = 8;
-	window.create(sf::VideoMode(screenWidth, screenHeight), "Rapid Roll", sf::Style::Close, settings);
+	if (!font.loadFromFile("arial.ttf"))
+	{
+		std::cout << "Error not find file with font" << std::endl;
+			std::exit(1);
+	}
 }
 
-void InitPlayer(sf::CircleShape & player, sf::Vector2f position)
+void InitMessage(sf::Text & text, sf::Font const & font, std::string const & message)
 {
-	player.setRadius(15);
-	player.setFillColor(sf::Color::Red);
-	player.setOrigin(player.getGlobalBounds().width / 2, player.getGlobalBounds().height / 2);
-	position += {0, -(player.getGlobalBounds().height / 2)};
-	player.setPosition(position);
+	text.setFont(font);
+	text.setCharacterSize(30);
+	text.setString(message);
+	text.setFillColor(sf::Color::Blue);
+	text.setOrigin(text.getGlobalBounds().width / 2, text.getGlobalBounds().height / 2);
+	text.setPosition(200, 400);
 }
 
-void UpdatePlayer(sf::CircleShape & player, sf::Int64 & time, float & platformSpeed, int & lives, sf::RectangleShape(&platforms)[10])
+void InitMessageSpace(sf::RectangleShape & messageSpace)
 {
-	Collision collisions = GetCollisions(player, platforms);
-
-	if (collisions.platformIndex != -1)
-	{
-		if (platforms[collisions.platformIndex].getFillColor() == sf::Color::Red)
-		{
-			--lives;
-			int startIndexPlatform = collisions.platformIndex;
-			if (startIndexPlatform + 1 == 10)
-			{
-				startIndexPlatform -= 1;
-			}
-			else
-			{
-				startIndexPlatform += 1;
-			}
-			InitPlayer(player, platforms[startIndexPlatform].getPosition());
-		}
-	}
-
-	if (collisions.collisionExtreme)
-	{
-		--lives;
-		int startIndexPlatform = -1;
-		int i = 0;
-		while (startIndexPlatform == -1)
-		{
-			if (platforms[i].getGlobalBounds().top > 200 && platforms[i].getFillColor() != sf::Color::Red)
-			{
-				startIndexPlatform = i;
-			}
-			++i;
-		}
-		InitPlayer(player, platforms[startIndexPlatform].getPosition());
-	}
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) 
-	{
-		if (player.getPosition().x > player.getGlobalBounds().width / 2 && !collisions.collisionLeft)
-			{
-				player.move(-0.1f * time, 0);
-			}
-	};
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right)) {
-		if (player.getPosition().x < 400 - player.getGlobalBounds().width / 2 && !collisions.collisionRight)
-		{
-			player.move(0.1f * time, 0);
-		}
-	};
-	if (collisions.collisionDown)
-	{
-		player.move(0, platformSpeed * time);
-	}
-	else
-	{
-		player.move(0, 0.1f * time);
-	}
+	messageSpace.setSize({200, 150});
+	messageSpace.setFillColor(sf::Color::Yellow);
+	messageSpace.setOrigin(messageSpace.getGlobalBounds().width / 2, messageSpace.getGlobalBounds().height / 2);
+	messageSpace.setPosition(200, 400);
 }
 
 struct Application
 {
 	sf::RenderWindow window;
 	sf::CircleShape player;
+	bool isPause;
 	int countThorns;
-	int lives = 3;
+	int lives;
 	float platformSpeed;
 	sf::RectangleShape platforms[10];
 	sf::RectangleShape ceiling;
+	sf::RectangleShape messageSpace;
 	sf::Event event;
+	sf::Font font;
+	sf::Text message;
+
+	void InitWindow()
+	{
+		const int screenWidth = 400;
+		const int screenHeight = 600;
+		sf::ContextSettings settings;
+		settings.antialiasingLevel = 8;
+		window.create(sf::VideoMode(screenWidth, screenHeight), "Rapid Roll", sf::Style::Close, settings);
+	}
 
 	void InitApplication()
 	{
-		InitWindow(window);
+		lives = 3;
+		isPause = true;
+		InitFont(font);
+		InitMessage(message, font, "Press enter\nto start");
+		InitMessageSpace(messageSpace);
 		InitMap(platforms, countThorns, platformSpeed, ceiling);
 		InitPlayer(player, platforms[0].getPosition());
 	}
@@ -102,6 +69,11 @@ struct Application
 	{
 		UpdatePlayer(player, time, platformSpeed, lives, platforms);
 		UpdateMap(platforms, time, platformSpeed, countThorns);
+		if (!lives)
+		{
+			InitMessage(message, font, "Press enter\nto play again");
+			InitMessageSpace(messageSpace);
+		}
 	}
 
 	void Draw()
@@ -112,6 +84,15 @@ struct Application
 		}
 		window.draw(ceiling);
 		window.draw(player);
+		if (!lives || isPause)
+		{
+			window.draw(messageSpace);
+			window.draw(message);
+			if (isPause)
+			{
+				//TODO: write game's name and massage "Press enter to start"
+			}
+		}
 	}
 
 	void HandleEvents()
@@ -120,6 +101,22 @@ struct Application
 		{
 			if (event.type == sf::Event::Closed)
 				window.close();
+			if (event.type == sf::Event::KeyPressed)
+			{
+				if (sf::Keyboard::isKeyPressed(sf::Keyboard::Return))
+				{
+					isPause = !isPause;
+					if (isPause)
+					{
+						if (!lives)
+						{
+							InitApplication();
+						}
+						InitMessage(message, font, "Press enter\nto start");
+						InitMessageSpace(messageSpace);
+					}
+				}
+			}
 		}
 	}
 };
@@ -127,20 +124,21 @@ struct Application
 int main()
 {
 	Application app;
+	app.InitWindow();
 
 	app.InitApplication();
 
 	sf::Clock clock;
 	while (app.window.isOpen())
 	{
+		sf::Int64 time = clock.getElapsedTime().asMicroseconds();
+		clock.restart();
+		time = time / 600;
+
 		app.HandleEvents();
 
-		if (app.lives)
+		if (app.lives && !app.isPause)
 		{
-			sf::Int64 time = clock.getElapsedTime().asMicroseconds();
-			clock.restart();
-			time = time / 600;
-
 			app.Update(time);
 		}
 
