@@ -36,7 +36,7 @@ Collision GetCollisions(sf::CircleShape & player, sf::RectangleShape(&platforms)
 		{
 			currentCollision.collisionLeft = true;
 		}
-		if (player.getGlobalBounds().top < 30 || player.getGlobalBounds().top > 600)
+		if (player.getGlobalBounds().top < 60 || player.getGlobalBounds().top > 600)
 		{
 			currentCollision.collisionExtreme = true;
 		}

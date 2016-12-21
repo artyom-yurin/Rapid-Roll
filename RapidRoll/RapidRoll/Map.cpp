@@ -29,13 +29,9 @@ sf::RectangleShape GeneratePlatform(sf::Vector2f & position, int & CountThorns)
 	return platform;
 }
 
-void InitMap(sf::RectangleShape(&platforms)[10], int & CountThorns, float & platformSpeed, sf::RectangleShape & ceiling)
+void InitMap(sf::RectangleShape(&platforms)[10], int & CountThorns, float & platformSpeed)
 {
 	CountThorns = GetRandomNumber(2, 10);
-	ceiling.setPosition(0, 0);
-	sf::Vector2f ceilingSize = {400, 30};
-	ceiling.setSize(ceilingSize);
-	ceiling.setFillColor(sf::Color::Red);
 	platformSpeed = -0.1f;
 	sf::Vector2f position;
 	position.x = (float)200;
@@ -69,13 +65,21 @@ void InitMap(sf::RectangleShape(&platforms)[10], int & CountThorns, float & plat
 	}
 }
 
+void InitCeiling(sf::RectangleShape & ceiling)
+{
+	ceiling.setPosition(0, 30);
+	sf::Vector2f ceilingSize = { 400, 30 };
+	ceiling.setSize(ceilingSize);
+	ceiling.setFillColor(sf::Color::Red);
+}
+
 void UpdateMap(sf::RectangleShape(&platforms)[10], sf::Int64 & time, float & platformSpeed, int & countThorns)
 {
 	for (sf::RectangleShape & platform : platforms)
 	{
 		platform.move(0, platformSpeed * time);
 	}
-	if (platforms[1].getPosition().y < 0)
+	if (platforms[1].getPosition().y < 15)
 	{
 		for (int i = 1; i < sizeof(platforms) / sizeof(*platforms); ++i)
 		{
