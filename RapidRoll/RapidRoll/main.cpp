@@ -113,13 +113,15 @@ int main()
 	app.InitWindow();
 
 	app.InitApplication();
-
+	
 	sf::Clock clock;
 	while (app.window.isOpen())
 	{
 		sf::Int64 time = clock.getElapsedTime().asMicroseconds();
 		clock.restart();
 		time = time / 600;
+
+		time = std::min<sf::Int64>(time, 1000);
 
 		app.HandleEvents();
 

@@ -31,6 +31,12 @@ void UpdatePlayer(sf::CircleShape & player, sf::Int64 & time, float & platformSp
 			}
 			InitPlayer(player, platforms[startIndexPlatform].getPosition());
 		}
+		else
+		{
+			sf::Vector2f newPosition = { player.getPosition().x, platforms[collisions.platformIndex].getGlobalBounds().top };
+			newPosition += {0, -player.getGlobalBounds().height / 2};
+			player.setPosition(newPosition);
+		}
 	}
 
 	if (collisions.collisionExtreme)

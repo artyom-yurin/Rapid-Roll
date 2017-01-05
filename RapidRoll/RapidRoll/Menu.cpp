@@ -42,7 +42,7 @@ void InitLiveBalls(sf::CircleShape(&liveBalls)[5], int lives)
 	{
 		liveBalls[i].setRadius(13);
 		liveBalls[i].setOrigin(liveBalls[i].getGlobalBounds().width / 2, liveBalls[i].getGlobalBounds().height / 2);
-		liveBalls[i].setPosition(i * 31 + 15, 15);
+		liveBalls[i].setPosition((float)i * 31 + 15, (float)15);
 		if (i < lives)
 		{
 			liveBalls[i].setFillColor(sf::Color::Red);
