@@ -121,8 +121,6 @@ int main()
 		clock.restart();
 		time = time / 600;
 
-		time = std::min<sf::Int64>(time, 1000);
-
 		app.HandleEvents();
 
 		if (app.lives && !app.isPause)
