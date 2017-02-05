@@ -1,15 +1,9 @@
 #include "stdafx.h"
+#include "RandomFunction.h"
 #include "Map.h"
+#include "Bonus.h"
 
-int GetRandomNumber(int min, int max)
-{
-	std::random_device rd;
-	std::mt19937 engine(rd());
-	std::uniform_int_distribution<int> uniform_dist(min, max);
-	return uniform_dist(engine);
-}
-
-sf::RectangleShape GeneratePlatform(sf::Vector2f & position, int & CountThorns)
+sf::RectangleShape GeneratePlatform(sf::Vector2f & position, int & CountThorns, SBonus & bonus)
 {
 	sf::RectangleShape platform;
 	sf::Vector2f size = { 100, 10 };
@@ -20,6 +14,16 @@ sf::RectangleShape GeneratePlatform(sf::Vector2f & position, int & CountThorns)
 	{
 		platform.setFillColor(sf::Color::Green);
 		--CountThorns;
+		if (bonus.countBonuses)
+		{
+			--bonus.countBonuses;
+		}
+		else
+		{
+			CreateNewBonus(bonus.bonus, platform);
+			bonus.needDraw = true;
+			bonus.countBonuses = GetRandomNumber(20, 40);
+		}
 	}
 	else
 	{
@@ -29,14 +33,14 @@ sf::RectangleShape GeneratePlatform(sf::Vector2f & position, int & CountThorns)
 	return platform;
 }
 
-void InitMap(sf::RectangleShape(&platforms)[10], int & CountThorns, float & platformSpeed)
+void InitMap(sf::RectangleShape(&platforms)[10], int & CountThorns, float & platformSpeed, SBonus & bonus)
 {
 	CountThorns = GetRandomNumber(2, 10);
 	platformSpeed = -0.1f;
 	sf::Vector2f position;
 	position.x = (float)200;
 	position.y = (float)300;
-	platforms[0] = GeneratePlatform(position, CountThorns);
+	platforms[0] = GeneratePlatform(position, CountThorns, bonus);
 	for (int i = 1; i < 10; ++i)
 	{
 		position.x = platforms[i - 1].getPosition().x;
@@ -61,7 +65,7 @@ void InitMap(sf::RectangleShape(&platforms)[10], int & CountThorns, float & plat
 			}
 		}
 		position.y = (float)200 + 100 * (i + 1);
-		platforms[i] = GeneratePlatform(position, CountThorns);
+		platforms[i] = GeneratePlatform(position, CountThorns, bonus);
 	}
 }
 
@@ -73,7 +77,7 @@ void InitCeiling(sf::RectangleShape & ceiling)
 	ceiling.setFillColor(sf::Color::Red);
 }
 
-void UpdateMap(sf::RectangleShape(&platforms)[10], sf::Int64 & time, float & platformSpeed, int & countThorns)
+void UpdateMap(sf::RectangleShape(&platforms)[10], sf::Int64 & time, float & platformSpeed, int & countThorns, SBonus & bonus)
 {
 	for (sf::RectangleShape & platform : platforms)
 	{
@@ -108,6 +112,6 @@ void UpdateMap(sf::RectangleShape(&platforms)[10], sf::Int64 & time, float & pla
 			}
 		}
 		position.y = (float)100 * 9;
-		platforms[9] = GeneratePlatform(position, countThorns);
+		platforms[9] = GeneratePlatform(position, countThorns, bonus);
 	}
 }

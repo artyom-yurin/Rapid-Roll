@@ -9,4 +9,6 @@ struct Collision
 	int platformIndex = -1;
 };
 
-Collision GetCollisions(sf::CircleShape & player, sf::RectangleShape(&plastforms)[10]);
+Collision GetCollisionsPlayer(sf::CircleShape & player, sf::RectangleShape(&plastforms)[10]);
+
+Collision GetCollisionsBonus(sf::RectangleShape & bonus, sf::RectangleShape(&plastforms)[10]);

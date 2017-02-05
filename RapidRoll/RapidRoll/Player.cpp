@@ -11,9 +11,9 @@ void InitPlayer(sf::CircleShape & player, sf::Vector2f position)
 	player.setPosition(position);
 }
 
-void UpdatePlayer(sf::CircleShape & player, sf::Int64 & time, float & platformSpeed, int & lives, sf::RectangleShape(&platforms)[10])
+void UpdatePlayer(sf::CircleShape & player, sf::Int64 & time, float platformSpeed, int & lives, sf::RectangleShape(&platforms)[10])
 {
-	Collision collisions = GetCollisions(player, platforms);
+	Collision collisions = GetCollisionsPlayer(player, platforms);
 
 	if (collisions.platformIndex != -1)
 	{

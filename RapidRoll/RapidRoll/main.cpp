@@ -2,22 +2,37 @@
 #include "Collision.h"
 #include "Map.h"
 #include "Player.h"
+#include "Bonus.h"
 #include "Menu.h"
 
 struct Application
 {
 	sf::RenderWindow window;
+	// игрок
 	sf::CircleShape player;
+	// флаг паузы
 	bool isPause;
+	// счетчик до следующей платформы с шипами
 	int countThorns;
+	// жизни
 	int lives;
+	// очки
 	int points;
+	// скорость платформ
 	float platformSpeed;
+	// бонус
+	SBonus bonus;
+	// платформы
 	sf::RectangleShape platforms[10];
+	// место дл€ меню
 	sf::RectangleShape progressBar;
+	// жизни геро€
 	sf::CircleShape liveBalls[5];
+	// верхн€€ граница
 	sf::RectangleShape ceiling;
+	// окно сообщений
 	sf::RectangleShape messageSpace;
+	// лого игры
 	sf::RectangleShape logoSpace;
 	sf::Event event;
 	sf::Font font;
@@ -41,7 +56,8 @@ struct Application
 		InitMessage(message, font, "Press enter\nto start");
 		InitMessageSpace(messageSpace);
 		InitLogoSpace(logoSpace);
-		InitMap(platforms, countThorns, platformSpeed);
+		bonus = InitBonus();
+		InitMap(platforms, countThorns, platformSpeed, bonus);
 		InitCeiling(ceiling);
 		InitPlayer(player, platforms[0].getPosition());
 		InitProgressBar(progressBar, liveBalls, lives, points);
@@ -51,7 +67,11 @@ struct Application
 	{
 		UpdatePlayer(player, time, platformSpeed, lives, platforms);
 		UpdateProgressBar(liveBalls, lives, points);
-		UpdateMap(platforms, time, platformSpeed, countThorns);
+		if (bonus.needDraw)
+		{
+			UpdateBonus(bonus, time, platformSpeed, platforms);
+		}
+		UpdateMap(platforms, time, platformSpeed, countThorns, bonus);
 		if (!lives)
 		{
 			InitMessage(message, font, "Press enter\nto play again");
@@ -63,6 +83,10 @@ struct Application
 		for (sf::RectangleShape platform : platforms)
 		{
 			window.draw(platform);
+		}
+		if (bonus.needDraw)
+		{
+			window.draw(bonus.bonus);
 		}
 		window.draw(ceiling);
 		window.draw(progressBar);

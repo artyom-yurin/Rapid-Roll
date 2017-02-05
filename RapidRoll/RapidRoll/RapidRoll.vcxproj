@@ -158,19 +158,23 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Bonus.h" />
     <ClInclude Include="Collision.h" />
     <ClInclude Include="Menu.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="Map.h" />
+    <ClInclude Include="RandomFunction.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Bonus.cpp" />
     <ClCompile Include="Collision.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Map.cpp" />
     <ClCompile Include="Menu.cpp" />
     <ClCompile Include="Player.cpp" />
+    <ClCompile Include="RandomFunction.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
