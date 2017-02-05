@@ -9,7 +9,7 @@ SBonus InitBonus()
 	sf::Vector2f size(20, 20);
 	currentBonus.bonus.setSize(size);
 	currentBonus.bonus.setOrigin(currentBonus.bonus.getGlobalBounds().width / 2, currentBonus.bonus.getGlobalBounds().height / 2);
-	currentBonus.countBonuses = 10/*GetRandomNumber(20, 60)*/;
+	currentBonus.countBonuses = GetRandomNumber(20, 60);
 	currentBonus.needDraw = false;
 	return currentBonus;
 }
@@ -29,7 +29,7 @@ void UpdateBonus(SBonus & bonus, sf::Int64 & time, float platformSpeed, sf::Rect
 
 void CreateNewBonus(SBonus & bonus, const sf::RectangleShape & platform)
 {
-	bonus.BonusType = 2/*GetRandomNumber(1, 3)*/;
+	bonus.BonusType = GetRandomNumber(1, 3);
 	bonus.bonus.setPosition((float)GetRandomNumber((int)(platform.getGlobalBounds().left + bonus.bonus.getGlobalBounds().width / 2), (int)(platform.getGlobalBounds().left + platform.getGlobalBounds().width - bonus.bonus.getGlobalBounds().width / 2)), platform.getPosition().y - (bonus.bonus.getGlobalBounds().height / 2));
 	if (bonus.BonusType == 1)
 	{

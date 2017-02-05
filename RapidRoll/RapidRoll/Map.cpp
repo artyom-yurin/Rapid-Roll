@@ -22,7 +22,7 @@ sf::RectangleShape GeneratePlatform(sf::Vector2f & position, int & CountThorns, 
 		{
 			CreateNewBonus(bonus, platform);
 			bonus.needDraw = true;
-			bonus.countBonuses = 10/*GetRandomNumber(20, 60)*/;
+			bonus.countBonuses = GetRandomNumber(20, 60);
 		}
 	}
 	else
