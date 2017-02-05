@@ -3,97 +3,134 @@
 #include "Collision.h"
 #include "Player.h"
 
-void InitPlayer(sf::CircleShape & player, sf::Vector2f position)
+void ResetPlayer(SPlayer & player, sf::Vector2f position)
 {
-	player.setRadius(15);
-	player.setFillColor(sf::Color::Red);
-	player.setOrigin(player.getGlobalBounds().width / 2, player.getGlobalBounds().height / 2);
-	position += {0, -(player.getGlobalBounds().height / 2)};
-	player.setPosition(position);
+	player.ball.setRadius(15);
+	player.ball.setFillColor(sf::Color::Red);
+	player.status = Status::live;
+	position += {0, -(player.ball.getGlobalBounds().height / 2)};
+	player.ball.setPosition(position);
+	player.playerSpeed = 0.1f;
+	player.shield = false;
+	player.bonusTime = 0;
 }
 
-void UpdatePlayer(sf::CircleShape & player, sf::Int64 & time, float platformSpeed, int & lives, sf::RectangleShape(&platforms)[10], SBonus & bonus)
+SPlayer InitPlayer(sf::Vector2f position)
 {
-	if (CollisionWithBonus(player, bonus.bonus))
-	{
-		bonus.needDraw = false;
-		bonus.bonus.setPosition(0, 0);
-		if (bonus.BonusType == 1)
-		{
-			// TODO: shield enent
-		}
-		else if (bonus.BonusType == 2)
-		{
-			// TODO: big ball event
-		}
-		else
-		{
-			if (lives < 6)
-			{
-				++lives;
-			}
-		}
-	}
-	Collision collisions = GetCollisionsPlayer(player, platforms);
+	SPlayer player;
+	player.status = Status::live;
+	player.lives = 3;
+	player.playerSpeed = 0.1f;
+	player.ball.setRadius(15);
+	player.ball.setFillColor(sf::Color::Red);
+	player.ball.setOrigin(player.ball.getGlobalBounds().width / 2, player.ball.getGlobalBounds().height / 2);
+	position += {0, -(player.ball.getGlobalBounds().height / 2)};
+	player.ball.setPosition(position);
+	return player;
+}
 
-	if (collisions.platformIndex != -1)
+void UpdatePlayer(SPlayer & player, sf::Int64 & time, float platformSpeed, sf::RectangleShape(&platforms)[10], SBonus & bonus)
+{
+	if (player.status == Status::dead)
 	{
-		if (platforms[collisions.platformIndex].getFillColor() == sf::Color::Red)
-		{
-			--lives;
-			int startIndexPlatform = collisions.platformIndex;
-			if (startIndexPlatform + 1 == 10)
-			{
-				startIndexPlatform -= 1;
-			}
-			else
-			{
-				startIndexPlatform += 1;
-			}
-			InitPlayer(player, platforms[startIndexPlatform].getPosition());
-		}
-		else
-		{
-			sf::Vector2f newPosition = { player.getPosition().x, platforms[collisions.platformIndex].getGlobalBounds().top };
-			newPosition += {0, -player.getGlobalBounds().height / 2};
-			player.setPosition(newPosition);
-		}
-	}
-
-	if (collisions.collisionExtreme)
-	{
-		--lives;
-		int startIndexPlatform = -1;
+		player.indexRespawn = -1;
 		int i = 0;
-		while (startIndexPlatform == -1)
+		for (sf::RectangleShape platform: platforms)
 		{
-			if (platforms[i].getGlobalBounds().top > 200 && platforms[i].getFillColor() != sf::Color::Red)
+			if (platform.getGlobalBounds().top > 300 && platform.getGlobalBounds().top < 400 && platform.getFillColor() != sf::Color::Red)
 			{
-				startIndexPlatform = i;
+				player.indexRespawn = i;
 			}
 			++i;
 		}
-		InitPlayer(player, platforms[startIndexPlatform].getPosition());
-	}
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
-	{
-		if (player.getPosition().x > player.getGlobalBounds().width / 2 && !collisions.collisionLeft)
+		if (player.indexRespawn != -1)
 		{
-			player.move(-0.1f * time, 0);
+			ResetPlayer(player, platforms[player.indexRespawn].getPosition());
 		}
-	};
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right)) {
-		if (player.getPosition().x < 400 - player.getGlobalBounds().width / 2 && !collisions.collisionRight)
-		{
-			player.move(0.1f * time, 0);
-		}
-	};
-	if (collisions.collisionDown)
-	{
-		player.move(0, platformSpeed * time);
 	}
 	else
 	{
-		player.move(0, 0.1f * time);
+		if (CollisionWithBonus(player.ball, bonus.bonus))
+		{
+			bonus.needDraw = false;
+			bonus.bonus.setPosition(0, 0);
+			if (bonus.BonusType == 1)
+			{
+				player.shield = true;
+				player.bonusTime = 30000; 
+				player.ball.setFillColor(sf::Color::Yellow);
+			}
+			else if (bonus.BonusType == 2)
+			{
+				player.ball.setRadius(20);
+				player.playerSpeed = 0.15f;
+			}
+			else
+			{
+				if (player.lives < 6)
+				{
+					++player.lives;
+				}
+			}
+		}
+		Collision collisions = GetCollisionsPlayer(player.ball, platforms);
+
+		if (collisions.platformIndex != -1)
+		{
+			if (platforms[collisions.platformIndex].getFillColor() == sf::Color::Red)
+			{
+				if (!player.shield)
+				{
+					--player.lives;
+				}
+				player.status = Status::dead;
+			}
+			else
+			{
+				sf::Vector2f newPosition = { player.ball.getPosition().x, platforms[collisions.platformIndex].getGlobalBounds().top };
+				newPosition += {0, -player.ball.getGlobalBounds().height / 2};
+				player.ball.setPosition(newPosition);
+			}
+		}
+
+		if (collisions.collisionExtreme)
+		{
+			if (!player.shield)
+			{
+				--player.lives;
+			}
+			player.status = Status::dead;
+		}
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
+		{
+			if (player.ball.getPosition().x > player.ball.getGlobalBounds().width / 2 && !collisions.collisionLeft)
+			{
+				player.ball.move(-0.1f * time, 0);
+			}
+		};
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right)) {
+			if (player.ball.getPosition().x < 400 - player.ball.getGlobalBounds().width / 2 && !collisions.collisionRight)
+			{
+				player.ball.move(0.1f * time, 0);
+			}
+		};
+		if (player.shield)
+		{
+			player.bonusTime -= time;
+			if (player.bonusTime <= 0)
+			{
+				player.shield = false;
+				player.bonusTime = 0;
+				player.ball.setFillColor(sf::Color::Red);
+			}
+		}
+		if (collisions.collisionDown)
+		{
+			player.ball.move(0, platformSpeed * time);
+		}
+		else
+		{
+			player.ball.move(0, player.playerSpeed * time);
+		}
 	}
 }

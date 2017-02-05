@@ -9,13 +9,11 @@ struct Application
 {
 	sf::RenderWindow window;
 	// игрок
-	sf::CircleShape player;
+	SPlayer player;
 	// флаг паузы
 	bool isPause;
 	// счетчик до следующей платформы с шипами
 	int countThorns;
-	// жизни
-	int lives;
 	// очки
 	int points;
 	// скорость платформ
@@ -49,7 +47,6 @@ struct Application
 
 	void InitApplication()
 	{
-		lives = 3;
 		points = 0;
 		isPause = true;
 		InitFont(font);
@@ -59,20 +56,20 @@ struct Application
 		bonus = InitBonus();
 		InitMap(platforms, countThorns, platformSpeed, bonus);
 		InitCeiling(ceiling);
-		InitPlayer(player, platforms[0].getPosition());
-		InitProgressBar(progressBar, liveBalls, lives, points);
+		player = InitPlayer(platforms[0].getPosition());
+		InitProgressBar(progressBar, liveBalls, player.lives, points);
 	}
 
 	void Update(sf::Int64 time)
 	{
-		UpdatePlayer(player, time, platformSpeed, lives, platforms, bonus);
-		UpdateProgressBar(liveBalls, lives, points);
+		UpdatePlayer(player, time, platformSpeed, platforms, bonus);
+		UpdateProgressBar(liveBalls, player.lives, points);
 		if (bonus.needDraw)
 		{
 			UpdateBonus(bonus, time, platformSpeed, platforms);
 		}
 		UpdateMap(platforms, time, platformSpeed, countThorns, bonus);
-		if (!lives)
+		if (!player.lives)
 		{
 			InitMessage(message, font, "Press enter\nto play again");
 		}
@@ -94,8 +91,11 @@ struct Application
 		{
 			window.draw(liveBall);
 		}
-		window.draw(player);
-		if (!lives || isPause)
+		if (player.status == Status::live)
+		{
+			window.draw(player.ball);
+		}
+		if (!player.lives || isPause)
 		{
 			window.draw(messageSpace);
 			window.draw(message);
@@ -119,7 +119,7 @@ struct Application
 					isPause = !isPause;
 					if (isPause)
 					{
-						if (!lives)
+						if (!player.lives)
 						{
 							InitApplication();
 						}
@@ -147,7 +147,7 @@ int main()
 
 		app.HandleEvents();
 
-		if (app.lives && !app.isPause)
+		if (app.player.lives && !app.isPause)
 		{
 			app.Update(time);
 		}
