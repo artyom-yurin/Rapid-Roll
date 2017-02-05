@@ -67,3 +67,33 @@ Collision GetCollisionsBonus(sf::RectangleShape & bonus, sf::RectangleShape(&pla
 
 	return currentCollision;
 }
+
+bool CollisionWithBonus(const sf::CircleShape & player, const sf::RectangleShape & bonus)
+{
+	float x11 = player.getGlobalBounds().left;
+	float y11 = player.getGlobalBounds().top;
+	float x12 = x11 + player.getGlobalBounds().width;
+	float y12 = y11 + player.getGlobalBounds().height;
+
+	float x21 = bonus.getGlobalBounds().left;
+	float y21 = bonus.getGlobalBounds().top;
+	float x22 = x21 + bonus.getGlobalBounds().width;
+	float y22 = y21 + bonus.getGlobalBounds().height;
+
+	if ((x11 <= x22 && x11 >= x21) || (x12 <= x22 && x12 >= x21))
+	{
+		if ((y11 <= y22 && y11 >= y21) || (y12 <= y22 && y12 >= y21))
+		{
+			return true;
+		}
+	}
+	else if ((x21 <= x12 && x21 >= x11) || (x22 <= x12 && x22 >= x11))
+	{
+		if ((y21 <= y12 && y21 >= y11) || (y22 <= y12 && y22 >= y11))
+		{
+			return true;
+		}
+	}
+
+	return false;
+}

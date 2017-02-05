@@ -21,26 +21,26 @@ void UpdateBonus(SBonus & bonus, sf::Int64 & time, float platformSpeed, sf::Rect
 	{
 		bonus.bonus.move(0, platformSpeed * time);
 	}
-	if (bonus.bonus.getPosition().y + bonus.bonus.getGlobalBounds().height < 0)
+	if (bonus.bonus.getPosition().y < 0)
 	{
 		bonus.needDraw = false;
 	}
 }
 
-void CreateNewBonus(sf::RectangleShape & bonus, const sf::RectangleShape & platform)
+void CreateNewBonus(SBonus & bonus, const sf::RectangleShape & platform)
 {
-	int typeBonus = GetRandomNumber(1, 3);
-	bonus.setPosition((float)GetRandomNumber((int)platform.getPosition().x, (int)(platform.getPosition().x + platform.getGlobalBounds().width)), platform.getPosition().y - (bonus.getGlobalBounds().height / 2));
-	if (/*typeBonus == 1*/false)
+	bonus.BonusType = 3/*GetRandomNumber(1, 3)*/;
+	bonus.bonus.setPosition((float)GetRandomNumber((int)platform.getGlobalBounds().left, (int)(platform.getGlobalBounds().left + platform.getGlobalBounds().width - bonus.bonus.getGlobalBounds().width / 2)), platform.getPosition().y - (bonus.bonus.getGlobalBounds().height / 2));
+	if (bonus.BonusType == 1)
 	{
 		// TODO: Big ball
 	}
-	else if (/*typeBonus == 2*/false)
+	else if (bonus.BonusType == 2)
 	{
 		// TODO: Shield
 	}
 	else
 	{
-		bonus.setFillColor(sf::Color::Magenta);
+		bonus.bonus.setFillColor(sf::Color::Magenta);
 	}
 }

@@ -1,4 +1,5 @@
 #include "stdafx.h"
+#include "Bonus.h"
 #include "Collision.h"
 #include "Player.h"
 
@@ -11,8 +12,28 @@ void InitPlayer(sf::CircleShape & player, sf::Vector2f position)
 	player.setPosition(position);
 }
 
-void UpdatePlayer(sf::CircleShape & player, sf::Int64 & time, float platformSpeed, int & lives, sf::RectangleShape(&platforms)[10])
+void UpdatePlayer(sf::CircleShape & player, sf::Int64 & time, float platformSpeed, int & lives, sf::RectangleShape(&platforms)[10], SBonus & bonus)
 {
+	if (CollisionWithBonus(player, bonus.bonus))
+	{
+		bonus.needDraw = false;
+		bonus.bonus.setPosition(0, 0);
+		if (bonus.BonusType == 1)
+		{
+			// TODO: big ball event
+		}
+		else if (bonus.BonusType == 2)
+		{
+			// TODO: shield enent
+		}
+		else
+		{
+			if (lives < 6)
+			{
+				++lives;
+			}
+		}
+	}
 	Collision collisions = GetCollisionsPlayer(player, platforms);
 
 	if (collisions.platformIndex != -1)

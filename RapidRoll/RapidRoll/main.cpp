@@ -65,7 +65,7 @@ struct Application
 
 	void Update(sf::Int64 time)
 	{
-		UpdatePlayer(player, time, platformSpeed, lives, platforms);
+		UpdatePlayer(player, time, platformSpeed, lives, platforms, bonus);
 		UpdateProgressBar(liveBalls, lives, points);
 		if (bonus.needDraw)
 		{

@@ -20,9 +20,9 @@ sf::RectangleShape GeneratePlatform(sf::Vector2f & position, int & CountThorns, 
 		}
 		else
 		{
-			CreateNewBonus(bonus.bonus, platform);
+			CreateNewBonus(bonus, platform);
 			bonus.needDraw = true;
-			bonus.countBonuses = GetRandomNumber(20, 40);
+			bonus.countBonuses = GetRandomNumber(20, 60);
 		}
 	}
 	else
