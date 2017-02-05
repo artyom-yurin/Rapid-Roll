@@ -1,4 +1,4 @@
-#include "stdafx.h"
+﻿#include "stdafx.h"
 #include "Collision.h"
 #include "RandomFunction.h"
 #include "Bonus.h"
@@ -33,11 +33,11 @@ void CreateNewBonus(SBonus & bonus, const sf::RectangleShape & platform)
 	bonus.bonus.setPosition((float)GetRandomNumber((int)platform.getGlobalBounds().left, (int)(platform.getGlobalBounds().left + platform.getGlobalBounds().width - bonus.bonus.getGlobalBounds().width / 2)), platform.getPosition().y - (bonus.bonus.getGlobalBounds().height / 2));
 	if (bonus.BonusType == 1)
 	{
-		// TODO: Big ball
+		// TODO: Shield
 	}
 	else if (bonus.BonusType == 2)
 	{
-		// TODO: Shield
+		// TODO: Big ball
 	}
 	else
 	{

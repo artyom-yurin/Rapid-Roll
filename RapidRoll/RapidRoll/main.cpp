@@ -1,4 +1,4 @@
-#include "stdafx.h"
+п»ї#include "stdafx.h"
 #include "Collision.h"
 #include "Map.h"
 #include "Player.h"
@@ -8,31 +8,31 @@
 struct Application
 {
 	sf::RenderWindow window;
-	// игрок
+	// РёРіСЂРѕРє
 	sf::CircleShape player;
-	// флаг паузы
+	// С„Р»Р°Рі РїР°СѓР·С‹
 	bool isPause;
-	// счетчик до следующей платформы с шипами
+	// СЃС‡РµС‚С‡РёРє РґРѕ СЃР»РµРґСѓСЋС‰РµР№ РїР»Р°С‚С„РѕСЂРјС‹ СЃ С€РёРїР°РјРё
 	int countThorns;
-	// жизни
+	// Р¶РёР·РЅРё
 	int lives;
-	// очки
+	// РѕС‡РєРё
 	int points;
-	// скорость платформ
+	// СЃРєРѕСЂРѕСЃС‚СЊ РїР»Р°С‚С„РѕСЂРј
 	float platformSpeed;
-	// бонус
+	// Р±РѕРЅСѓСЃ
 	SBonus bonus;
-	// платформы
+	// РїР»Р°С‚С„РѕСЂРјС‹
 	sf::RectangleShape platforms[10];
-	// место для меню
+	// РјРµСЃС‚Рѕ РґР»СЏ РјРµРЅСЋ
 	sf::RectangleShape progressBar;
-	// жизни героя
+	// Р¶РёР·РЅРё РіРµСЂРѕСЏ
 	sf::CircleShape liveBalls[5];
-	// верхняя граница
+	// РІРµСЂС…РЅСЏСЏ РіСЂР°РЅРёС†Р°
 	sf::RectangleShape ceiling;
-	// окно сообщений
+	// РѕРєРЅРѕ СЃРѕРѕР±С‰РµРЅРёР№
 	sf::RectangleShape messageSpace;
-	// лого игры
+	// Р»РѕРіРѕ РёРіСЂС‹
 	sf::RectangleShape logoSpace;
 	sf::Event event;
 	sf::Font font;

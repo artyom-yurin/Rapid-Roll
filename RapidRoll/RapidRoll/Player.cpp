@@ -20,11 +20,11 @@ void UpdatePlayer(sf::CircleShape & player, sf::Int64 & time, float platformSpee
 		bonus.bonus.setPosition(0, 0);
 		if (bonus.BonusType == 1)
 		{
-			// TODO: big ball event
+			// TODO: shield enent
 		}
 		else if (bonus.BonusType == 2)
 		{
-			// TODO: shield enent
+			// TODO: big ball event
 		}
 		else
 		{
