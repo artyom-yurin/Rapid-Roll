@@ -6,6 +6,7 @@
 void ResetPlayer(SPlayer & player, sf::Vector2f position)
 {
 	player.ball.setRadius(15);
+	player.ball.setOrigin(player.ball.getGlobalBounds().width / 2, player.ball.getGlobalBounds().height / 2);
 	player.ball.setFillColor(sf::Color::Red);
 	player.status = Status::live;
 	position += {0, -(player.ball.getGlobalBounds().height / 2)};
@@ -63,6 +64,7 @@ void UpdatePlayer(SPlayer & player, sf::Int64 & time, float platformSpeed, sf::R
 			else if (bonus.BonusType == 2)
 			{
 				player.ball.setRadius(20);
+				player.ball.setOrigin(player.ball.getGlobalBounds().width / 2, player.ball.getGlobalBounds().height / 2);
 				player.playerSpeed = 0.15f;
 			}
 			else
