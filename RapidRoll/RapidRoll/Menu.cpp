@@ -2,7 +2,7 @@
 #include "Player.h"
 #include "Menu.h"
 
-void InitLogoSpace(sf::RectangleShape & logoSpace)
+void InitSpace(sf::RectangleShape & logoSpace)
 {
 	logoSpace.setSize({ 300, 200 });
 	logoSpace.setFillColor(sf::Color::Yellow);
@@ -17,6 +17,17 @@ void InitFont(sf::Font & font)
 		std::cout << "Error not find file with font" << std::endl;
 		std::exit(1);
 	}
+}
+
+void InitResultMessage(sf::Text & text, sf::Font const & font, int score)
+{
+	text.setFont(font);
+	text.setCharacterSize(30);
+	std::string message = "Your score:\n" + std::to_string(score);
+	text.setString(message);
+	text.setFillColor(sf::Color::Blue);
+	text.setOrigin(text.getGlobalBounds().width / 2, text.getGlobalBounds().height / 2);
+	text.setPosition(200, 200);
 }
 
 void InitMessage(sf::Text & text, sf::Font const & font, std::string const & message)

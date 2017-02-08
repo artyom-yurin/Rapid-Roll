@@ -1,8 +1,10 @@
 #pragma once
 
-void InitLogoSpace(sf::RectangleShape & logoSpace);
+void InitSpace(sf::RectangleShape & logoSpace);
 
 void InitFont(sf::Font & font);
+
+void InitResultMessage(sf::Text & text, sf::Font const & font, int score);
 
 void InitMessage(sf::Text & text, sf::Font const & font, std::string const & message);
 

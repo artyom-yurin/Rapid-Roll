@@ -30,9 +30,12 @@ struct Application
 	sf::RectangleShape messageSpace;
 	// лого игры
 	sf::RectangleShape logoSpace;
+	// результат игры
+	sf::RectangleShape resultSpace;
 	sf::Event event;
 	sf::Font font;
 	sf::Text message;
+	sf::Text resultMessage;
 	sf::Text scoreText;
 
 	void InitWindow()
@@ -50,7 +53,8 @@ struct Application
 		InitFont(font);
 		InitMessage(message, font, "Press enter\nto start");
 		InitMessageSpace(messageSpace);
-		InitLogoSpace(logoSpace);
+		InitSpace(logoSpace);
+		InitSpace(resultSpace);
 		bonus = InitBonus();
 		InitMap(platforms, countThorns, platformSpeed, bonus);
 		InitCeiling(ceiling);
@@ -69,6 +73,7 @@ struct Application
 		UpdateMap(platforms, time, platformSpeed, countThorns, bonus);
 		if (!player.lives)
 		{
+			InitResultMessage(resultMessage, font, (int)player.score);
 			InitMessage(message, font, "Press enter\nto play again");
 		}
 	}
@@ -101,6 +106,11 @@ struct Application
 			if (isPause)
 			{
 				window.draw(logoSpace);
+			}
+			else if (!player.lives)
+			{
+				window.draw(resultSpace);
+				window.draw(resultMessage);
 			}
 		}
 	}
