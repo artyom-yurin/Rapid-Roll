@@ -11,8 +11,11 @@ void ResetPlayer(SPlayer & player, sf::Vector2f position)
 	player.status = Status::live;
 	position += {0, -(player.ball.getGlobalBounds().height / 2)};
 	player.ball.setPosition(position);
-	player.playerSpeed = 0.1f;
+	float speed = player.playerSpeed / 100000;
+	player.playerSpeed = std::max(0.1f, speed);
+	player.playerSpeed = std::min(0.3f, player.playerSpeed);
 	player.shield = false;
+	player.isBig = false;
 	player.bonusTime = 0;
 }
 
@@ -21,6 +24,8 @@ SPlayer InitPlayer(sf::Vector2f position)
 	SPlayer player;
 	player.status = Status::live;
 	player.lives = 3;
+	player.score = 0;
+	player.isBig = false;
 	player.playerSpeed = 0.1f;
 	player.ball.setRadius(15);
 	player.ball.setFillColor(sf::Color::Red);
@@ -30,7 +35,7 @@ SPlayer InitPlayer(sf::Vector2f position)
 	return player;
 }
 
-void UpdatePlayer(SPlayer & player, sf::Int64 & time, float platformSpeed, sf::RectangleShape(&platforms)[10], SBonus & bonus)
+void UpdatePlayer(SPlayer & player, sf::Int64 & time, float & platformSpeed, sf::RectangleShape(&platforms)[10], SBonus & bonus)
 {
 	if (player.status == Status::dead)
 	{
@@ -63,15 +68,24 @@ void UpdatePlayer(SPlayer & player, sf::Int64 & time, float platformSpeed, sf::R
 			}
 			else if (bonus.BonusType == 2)
 			{
-				player.ball.setRadius(20);
-				player.ball.setOrigin(player.ball.getGlobalBounds().width / 2, player.ball.getGlobalBounds().height / 2);
-				player.playerSpeed = 0.15f;
+				if (!player.isBig)
+				{
+					player.ball.setRadius(20);
+					player.ball.setOrigin(player.ball.getGlobalBounds().width / 2, player.ball.getGlobalBounds().height / 2);
+					player.playerSpeed = player.playerSpeed * 1.5f;
+					player.isBig = true;
+				}	
 			}
 			else
 			{
 				if (player.lives < 6)
 				{
 					++player.lives;
+				}
+				player.score += 100;
+				if (player.score > 999999999)
+				{
+					player.score = 999999999.0f;
 				}
 			}
 		}
@@ -133,6 +147,24 @@ void UpdatePlayer(SPlayer & player, sf::Int64 & time, float platformSpeed, sf::R
 		else
 		{
 			player.ball.move(0, player.playerSpeed * time);
+			player.score += player.playerSpeed;
+			float speed = player.playerSpeed / 100000;
+			player.playerSpeed = std::max(0.1f, speed);
+			if (player.isBig)
+			{
+				player.playerSpeed *= 1.5;
+			}
+			player.playerSpeed = std::min(0.3f, player.playerSpeed);
+			platformSpeed = -player.playerSpeed;
+			if (player.isBig)
+			{
+				platformSpeed /= 1.5;
+			}
+			if (player.score > 999999999)
+			{
+				player.score = 999999999.0f;
+			}
+
 		}
 	}
 }

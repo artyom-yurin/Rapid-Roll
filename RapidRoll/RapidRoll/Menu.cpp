@@ -1,4 +1,5 @@
 #include "stdafx.h"
+#include "Player.h"
 #include "Menu.h"
 
 void InitLogoSpace(sf::RectangleShape & logoSpace)
@@ -54,20 +55,31 @@ void InitLiveBalls(sf::CircleShape(&liveBalls)[5], int lives)
 	}
 }
 
-void InitProgressBar(sf::RectangleShape & processBar, sf::CircleShape(&liveBalls)[5], int lives, int points)
+void InitScore(sf::Text & text, sf::Font const & font)
+{
+	text.setFont(font);
+	text.setCharacterSize(20);
+	text.setString("Score: 000000000");
+	text.setFillColor(sf::Color::White);
+	text.setOrigin(text.getGlobalBounds().width / 2, text.getGlobalBounds().height / 2);
+	text.setPosition(300, 10);
+}
+
+void InitProgressBar(sf::RectangleShape & processBar, sf::CircleShape(&liveBalls)[5], int lives, sf::Text & scoreText, sf::Font const & font)
 {
 	processBar.setPosition(0, 0);
 	sf::Vector2f barSize = { 400, 30 };
 	processBar.setSize(barSize);
 	processBar.setFillColor(sf::Color::Black);
 	InitLiveBalls(liveBalls, lives);
+	InitScore(scoreText, font);
 }
 
-void UpdateProgressBar(sf::CircleShape(&liveBalls)[5], int lives, int points)
+void UpdateProgressBar(sf::CircleShape(&liveBalls)[5], const struct SPlayer & player, sf::Text & scoreText)
 {
 	for (int i = 0; i < 5; ++i)
 	{
-		if (i < lives)
+		if (i < player.lives)
 		{
 			liveBalls[i].setFillColor(sf::Color::Red);
 		}
@@ -76,6 +88,12 @@ void UpdateProgressBar(sf::CircleShape(&liveBalls)[5], int lives, int points)
 			liveBalls[i].setFillColor(sf::Color::Cyan);
 		}
 	}
-	// TODO: SCORE WRITE
-	
+	std::string result;
+	std::string score = std::to_string((int)player.score);
+	for (int i = 0; i < (9 - score.length()); ++i)
+	{
+		result += "0";
+	}
+	result += score;
+	scoreText.setString("Score: " + result);
 }

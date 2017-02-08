@@ -14,8 +14,6 @@ struct Application
 	bool isPause;
 	// счетчик до следующей платформы с шипами
 	int countThorns;
-	// очки
-	int points;
 	// скорость платформ
 	float platformSpeed;
 	// бонус
@@ -35,6 +33,7 @@ struct Application
 	sf::Event event;
 	sf::Font font;
 	sf::Text message;
+	sf::Text scoreText;
 
 	void InitWindow()
 	{
@@ -47,7 +46,6 @@ struct Application
 
 	void InitApplication()
 	{
-		points = 0;
 		isPause = true;
 		InitFont(font);
 		InitMessage(message, font, "Press enter\nto start");
@@ -57,13 +55,13 @@ struct Application
 		InitMap(platforms, countThorns, platformSpeed, bonus);
 		InitCeiling(ceiling);
 		player = InitPlayer(platforms[0].getPosition());
-		InitProgressBar(progressBar, liveBalls, player.lives, points);
+		InitProgressBar(progressBar, liveBalls, player.lives, scoreText, font);
 	}
 
 	void Update(sf::Int64 time)
 	{
 		UpdatePlayer(player, time, platformSpeed, platforms, bonus);
-		UpdateProgressBar(liveBalls, player.lives, points);
+		UpdateProgressBar(liveBalls, player, scoreText);
 		if (bonus.needDraw)
 		{
 			UpdateBonus(bonus, time, platformSpeed, platforms);
@@ -91,6 +89,7 @@ struct Application
 		{
 			window.draw(liveBall);
 		}
+		window.draw(scoreText);
 		if (player.status == Status::live)
 		{
 			window.draw(player.ball);
