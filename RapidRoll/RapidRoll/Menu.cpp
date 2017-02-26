@@ -101,7 +101,7 @@ void UpdateProgressBar(sf::CircleShape(&liveBalls)[5], const struct SPlayer & pl
 	}
 	std::string result;
 	std::string score = std::to_string((int)player.score);
-	for (int i = 0; i < (9 - score.length()); ++i)
+	for (size_t i = 0; i < (9 - score.length()); ++i)
 	{
 		result += "0";
 	}

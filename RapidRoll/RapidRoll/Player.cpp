@@ -1,4 +1,5 @@
 #include "stdafx.h"
+#include "Speed.h"
 #include "Bonus.h"
 #include "Collision.h"
 #include "Player.h"
@@ -148,13 +149,7 @@ void UpdatePlayer(SPlayer & player, sf::Int64 & time, float & platformSpeed, sf:
 		{
 			player.ball.move(0, player.playerSpeed * time);
 			player.score += player.playerSpeed;
-			float speed = player.playerSpeed / 100000;
-			player.playerSpeed = std::max(0.1f, speed);
-			if (player.isBig)
-			{
-				player.playerSpeed *= 1.5;
-			}
-			player.playerSpeed = std::min(0.3f, player.playerSpeed);
+			player.playerSpeed = GetNewSpeed(player.score, player.isBig);
 			platformSpeed = -player.playerSpeed;
 			if (player.isBig)
 			{
