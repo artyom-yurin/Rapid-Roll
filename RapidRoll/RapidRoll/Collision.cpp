@@ -1,42 +1,43 @@
 #include "stdafx.h"
 #include "Collision.h"
+#include "Map.h"
 
-Collision GetCollisionsPlayer(sf::CircleShape & player, sf::RectangleShape(&platforms)[10])
+Collision GetCollisionsPlayer(sf::CircleShape & player, SPlatform(&platforms)[10], sf::Sprite const & ceiling)
 {
 	Collision currentCollision;
 	int i = 0;
-	for (sf::RectangleShape platform : platforms)
+	for (SPlatform platform : platforms)
 	{
-		if ((platform.getGlobalBounds().left <= player.getGlobalBounds().left + player.getGlobalBounds().width / 2) &&
-			(platform.getGlobalBounds().left + platform.getGlobalBounds().width >= player.getGlobalBounds().left + player.getGlobalBounds().width / 2) &&
-			(platform.getGlobalBounds().top <= player.getGlobalBounds().top + player.getGlobalBounds().height) &&
-			(platform.getGlobalBounds().top + platform.getGlobalBounds().height >= player.getGlobalBounds().top + player.getGlobalBounds().height)
+		if ((platform.platform.getGlobalBounds().left <= player.getGlobalBounds().left + player.getGlobalBounds().width / 2) &&
+			(platform.platform.getGlobalBounds().left + platform.platform.getGlobalBounds().width >= player.getGlobalBounds().left + player.getGlobalBounds().width / 2) &&
+			(platform.platform.getGlobalBounds().top <= player.getGlobalBounds().top + player.getGlobalBounds().height) &&
+			(platform.platform.getGlobalBounds().top + platform.platform.getGlobalBounds().height >= player.getGlobalBounds().top + player.getGlobalBounds().height)
 			)
 		{
 			currentCollision.collisionDown = true;
 			currentCollision.platformIndex = i;
 		}
 
-		if ((platform.getGlobalBounds().left <= player.getGlobalBounds().left + player.getGlobalBounds().width) &&
-			(platform.getGlobalBounds().left >= player.getGlobalBounds().left + player.getGlobalBounds().width / 2) &&
-			(((platform.getGlobalBounds().top >= player.getGlobalBounds().top) && (platform.getGlobalBounds().top + platform.getGlobalBounds().height <= player.getGlobalBounds().top + player.getGlobalBounds().height)) ||
-			((platform.getGlobalBounds().top <= player.getGlobalBounds().top) && (platform.getGlobalBounds().top + platform.getGlobalBounds().height >= player.getGlobalBounds().top)) ||
-				((platform.getGlobalBounds().top <= player.getGlobalBounds().top + player.getGlobalBounds().height) && (platform.getGlobalBounds().top + platform.getGlobalBounds().height >= player.getGlobalBounds().top + player.getGlobalBounds().height)))
+		if ((platform.platform.getGlobalBounds().left <= player.getGlobalBounds().left + player.getGlobalBounds().width) &&
+			(platform.platform.getGlobalBounds().left >= player.getGlobalBounds().left + player.getGlobalBounds().width / 2) &&
+			(((platform.platform.getGlobalBounds().top >= player.getGlobalBounds().top) && (platform.platform.getGlobalBounds().top + platform.platform.getGlobalBounds().height <= player.getGlobalBounds().top + player.getGlobalBounds().height)) ||
+			((platform.platform.getGlobalBounds().top <= player.getGlobalBounds().top) && (platform.platform.getGlobalBounds().top + platform.platform.getGlobalBounds().height >= player.getGlobalBounds().top)) ||
+				((platform.platform.getGlobalBounds().top <= player.getGlobalBounds().top + player.getGlobalBounds().height) && (platform.platform.getGlobalBounds().top + platform.platform.getGlobalBounds().height >= player.getGlobalBounds().top + player.getGlobalBounds().height)))
 			)
 		{
 			currentCollision.collisionRight = true;
 		}
 
-		if ((platform.getGlobalBounds().left + platform.getGlobalBounds().width >= player.getGlobalBounds().left) &&
-			(platform.getGlobalBounds().left + platform.getGlobalBounds().width <= player.getGlobalBounds().left + player.getGlobalBounds().width / 2) &&
-			(((platform.getGlobalBounds().top >= player.getGlobalBounds().top) && (platform.getGlobalBounds().top + platform.getGlobalBounds().height <= player.getGlobalBounds().top + player.getGlobalBounds().height)) ||
-			((platform.getGlobalBounds().top <= player.getGlobalBounds().top) && (platform.getGlobalBounds().top + platform.getGlobalBounds().height >= player.getGlobalBounds().top)) ||
-				((platform.getGlobalBounds().top <= player.getGlobalBounds().top + player.getGlobalBounds().height) && (platform.getGlobalBounds().top + platform.getGlobalBounds().height >= player.getGlobalBounds().top + player.getGlobalBounds().height)))
+		if ((platform.platform.getGlobalBounds().left + platform.platform.getGlobalBounds().width >= player.getGlobalBounds().left) &&
+			(platform.platform.getGlobalBounds().left + platform.platform.getGlobalBounds().width <= player.getGlobalBounds().left + player.getGlobalBounds().width / 2) &&
+			(((platform.platform.getGlobalBounds().top >= player.getGlobalBounds().top) && (platform.platform.getGlobalBounds().top + platform.platform.getGlobalBounds().height <= player.getGlobalBounds().top + player.getGlobalBounds().height)) ||
+			((platform.platform.getGlobalBounds().top <= player.getGlobalBounds().top) && (platform.platform.getGlobalBounds().top + platform.platform.getGlobalBounds().height >= player.getGlobalBounds().top)) ||
+				((platform.platform.getGlobalBounds().top <= player.getGlobalBounds().top + player.getGlobalBounds().height) && (platform.platform.getGlobalBounds().top + platform.platform.getGlobalBounds().height >= player.getGlobalBounds().top + player.getGlobalBounds().height)))
 			)
 		{
 			currentCollision.collisionLeft = true;
 		}
-		if (player.getGlobalBounds().top < 60 || player.getGlobalBounds().top > 600)
+		if (player.getGlobalBounds().top < (30 + ceiling.getGlobalBounds().height) || player.getGlobalBounds().top > 600)
 		{
 			currentCollision.collisionExtreme = true;
 		}
@@ -46,17 +47,17 @@ Collision GetCollisionsPlayer(sf::CircleShape & player, sf::RectangleShape(&plat
 	return currentCollision;
 }
 
-Collision GetCollisionsBonus(sf::RectangleShape & bonus, sf::RectangleShape(&platforms)[10])
+Collision GetCollisionsBonus(sf::Sprite & bonus, SPlatform(&platforms)[10])
 {
 	Collision currentCollision;
 
 	int i = 0;
-	for (sf::RectangleShape platform : platforms)
+	for (SPlatform platform : platforms)
 	{
-		if ((platform.getGlobalBounds().left <= bonus.getGlobalBounds().left + bonus.getGlobalBounds().width / 2) &&
-			(platform.getGlobalBounds().left + platform.getGlobalBounds().width >= bonus.getGlobalBounds().left + bonus.getGlobalBounds().width / 2) &&
-			(platform.getGlobalBounds().top <= bonus.getGlobalBounds().top + bonus.getGlobalBounds().height) &&
-			(platform.getGlobalBounds().top + platform.getGlobalBounds().height >= bonus.getGlobalBounds().top + bonus.getGlobalBounds().height)
+		if ((platform.platform.getGlobalBounds().left <= bonus.getGlobalBounds().left + bonus.getGlobalBounds().width / 2) &&
+			(platform.platform.getGlobalBounds().left + platform.platform.getGlobalBounds().width >= bonus.getGlobalBounds().left + bonus.getGlobalBounds().width / 2) &&
+			(platform.platform.getGlobalBounds().top <= bonus.getGlobalBounds().top + bonus.getGlobalBounds().height) &&
+			(platform.platform.getGlobalBounds().top + platform.platform.getGlobalBounds().height >= bonus.getGlobalBounds().top + bonus.getGlobalBounds().height)
 			)
 		{
 			currentCollision.collisionDown = true;
@@ -68,7 +69,7 @@ Collision GetCollisionsBonus(sf::RectangleShape & bonus, sf::RectangleShape(&pla
 	return currentCollision;
 }
 
-bool CollisionWithBonus(const sf::CircleShape & player, const sf::RectangleShape & bonus)
+bool CollisionWithBonus(const sf::CircleShape & player, const sf::Sprite & bonus)
 {
 	float x11 = player.getGlobalBounds().left;
 	float y11 = player.getGlobalBounds().top;

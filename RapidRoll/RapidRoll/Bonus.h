@@ -2,14 +2,14 @@
 
 struct SBonus
 {
-	sf::RectangleShape bonus;
+	sf::Sprite bonus;
 	int BonusType;
 	int countBonuses;
 	bool needDraw;
 };
 
-SBonus InitBonus();
+SBonus InitBonus(sf::Texture const & texture);
 
-void UpdateBonus(SBonus & bonus, sf::Int64 & time, float platformSpeed, sf::RectangleShape(&platforms)[10]);
+void UpdateBonus(SBonus & bonus, sf::Int64 & time, float platformSpeed, struct SPlatform(&platforms)[10]);
 
-void CreateNewBonus(SBonus & bonus, const sf::RectangleShape & platform);
+void CreateNewBonus(SBonus & bonus, const sf::Sprite & platform);

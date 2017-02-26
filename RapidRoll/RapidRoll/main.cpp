@@ -8,6 +8,8 @@
 struct Application
 {
 	sf::RenderWindow window;
+	sf::Image image;
+	sf::Texture texture;
 	// игрок
 	SPlayer player;
 	// флаг паузы
@@ -19,13 +21,13 @@ struct Application
 	// бонус
 	SBonus bonus;
 	// платформы
-	sf::RectangleShape platforms[10];
+	SPlatform platforms[10];
 	// место для меню
 	sf::RectangleShape progressBar;
 	// жизни героя
 	sf::CircleShape liveBalls[5];
 	// верхняя граница
-	sf::RectangleShape ceiling;
+	sf::Sprite ceiling;
 	// окно сообщений
 	sf::RectangleShape messageSpace;
 	// лого игры
@@ -49,28 +51,29 @@ struct Application
 
 	void InitApplication()
 	{
+		LoadSprite(image, texture);
 		isPause = true;
 		InitFont(font);
 		InitMessage(message, font, "Press enter\nto start");
 		InitMessageSpace(messageSpace);
 		InitSpace(logoSpace);
 		InitSpace(resultSpace);
-		bonus = InitBonus();
-		InitMap(platforms, countThorns, platformSpeed, bonus);
-		InitCeiling(ceiling);
-		player = InitPlayer(platforms[0].getPosition());
+		bonus = InitBonus(texture);
+		InitMap(platforms, countThorns, platformSpeed, bonus, texture);
+		InitCeiling(ceiling, texture);
+		player = InitPlayer(platforms[0].platform.getPosition());
 		InitProgressBar(progressBar, liveBalls, player.lives, scoreText, font);
 	}
 
 	void Update(sf::Int64 time)
 	{
-		UpdatePlayer(player, time, platformSpeed, platforms, bonus);
+		UpdatePlayer(player, time, platformSpeed, platforms, bonus, ceiling);
 		UpdateProgressBar(liveBalls, player, scoreText);
 		if (bonus.needDraw)
 		{
 			UpdateBonus(bonus, time, platformSpeed, platforms);
 		}
-		UpdateMap(platforms, time, platformSpeed, countThorns, bonus);
+		UpdateMap(platforms, time, platformSpeed, countThorns, bonus, texture);
 		if (!player.lives)
 		{
 			InitResultMessage(resultMessage, font, (int)player.score);
@@ -80,9 +83,9 @@ struct Application
 
 	void Draw()
 	{
-		for (sf::RectangleShape platform : platforms)
+		for (SPlatform platform : platforms)
 		{
-			window.draw(platform);
+			window.draw(platform.platform);
 		}
 		if (bonus.needDraw)
 		{

@@ -3,6 +3,7 @@
 #include "Bonus.h"
 #include "Collision.h"
 #include "Player.h"
+#include "Map.h"
 
 void ResetPlayer(SPlayer & player, sf::Vector2f position)
 {
@@ -36,15 +37,15 @@ SPlayer InitPlayer(sf::Vector2f position)
 	return player;
 }
 
-void UpdatePlayer(SPlayer & player, sf::Int64 & time, float & platformSpeed, sf::RectangleShape(&platforms)[10], SBonus & bonus)
+void UpdatePlayer(SPlayer & player, sf::Int64 & time, float & platformSpeed, SPlatform(&platforms)[10], SBonus & bonus, sf::Sprite const & ceiling)
 {
 	if (player.status == Status::dead)
 	{
 		player.indexRespawn = -1;
 		int i = 0;
-		for (sf::RectangleShape platform: platforms)
+		for (SPlatform platform: platforms)
 		{
-			if (platform.getGlobalBounds().top > 300 && platform.getGlobalBounds().top < 400 && platform.getFillColor() != sf::Color::Red)
+			if (platform.platform.getGlobalBounds().top > 300 && platform.platform.getGlobalBounds().top < 400 && !platform.isThorn)
 			{
 				player.indexRespawn = i;
 			}
@@ -52,7 +53,7 @@ void UpdatePlayer(SPlayer & player, sf::Int64 & time, float & platformSpeed, sf:
 		}
 		if (player.indexRespawn != -1)
 		{
-			ResetPlayer(player, platforms[player.indexRespawn].getPosition());
+			ResetPlayer(player, platforms[player.indexRespawn].platform.getPosition());
 		}
 	}
 	else
@@ -69,16 +70,6 @@ void UpdatePlayer(SPlayer & player, sf::Int64 & time, float & platformSpeed, sf:
 			}
 			else if (bonus.BonusType == 2)
 			{
-				if (!player.isBig)
-				{
-					player.ball.setRadius(20);
-					player.ball.setOrigin(player.ball.getGlobalBounds().width / 2, player.ball.getGlobalBounds().height / 2);
-					player.playerSpeed = player.playerSpeed * 1.5f;
-					player.isBig = true;
-				}	
-			}
-			else
-			{
 				if (player.lives < 6)
 				{
 					++player.lives;
@@ -89,12 +80,22 @@ void UpdatePlayer(SPlayer & player, sf::Int64 & time, float & platformSpeed, sf:
 					player.score = 999999999.0f;
 				}
 			}
+			else if (bonus.BonusType == 3)
+			{
+				if (!player.isBig)
+				{
+					player.ball.setRadius(20);
+					player.ball.setOrigin(player.ball.getGlobalBounds().width / 2, player.ball.getGlobalBounds().height / 2);
+					player.playerSpeed = player.playerSpeed * 1.5f;
+					player.isBig = true;
+				}
+			}
 		}
-		Collision collisions = GetCollisionsPlayer(player.ball, platforms);
+		Collision collisions = GetCollisionsPlayer(player.ball, platforms, ceiling);
 
 		if (collisions.platformIndex != -1)
 		{
-			if (platforms[collisions.platformIndex].getFillColor() == sf::Color::Red)
+			if (platforms[collisions.platformIndex].isThorn)
 			{
 				if (!player.shield)
 				{
@@ -104,7 +105,7 @@ void UpdatePlayer(SPlayer & player, sf::Int64 & time, float & platformSpeed, sf:
 			}
 			else
 			{
-				sf::Vector2f newPosition = { player.ball.getPosition().x, platforms[collisions.platformIndex].getGlobalBounds().top };
+				sf::Vector2f newPosition = { player.ball.getPosition().x, platforms[collisions.platformIndex].platform.getGlobalBounds().top };
 				newPosition += {0, -player.ball.getGlobalBounds().height / 2};
 				player.ball.setPosition(newPosition);
 			}

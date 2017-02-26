@@ -24,4 +24,4 @@ void ResetPlayer(SPlayer & player, sf::Vector2f position);
 
 SPlayer InitPlayer(sf::Vector2f position);
 
-void UpdatePlayer(SPlayer & player, sf::Int64 & time, float & platformSpeed, sf::RectangleShape(&platforms)[10], struct SBonus & bonus);
+void UpdatePlayer(SPlayer & player, sf::Int64 & time, float & platformSpeed, struct SPlatform(&platforms)[10], struct SBonus & bonus, sf::Sprite const & ceiling);

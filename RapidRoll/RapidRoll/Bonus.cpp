@@ -1,20 +1,21 @@
 ﻿#include "stdafx.h"
 #include "Collision.h"
 #include "RandomFunction.h"
+#include "Map.h"
 #include "Bonus.h"
 
-SBonus InitBonus()
+SBonus InitBonus(sf::Texture const & texture)
 {
 	SBonus currentBonus;
-	sf::Vector2f size(20, 20);
-	currentBonus.bonus.setSize(size);
+	currentBonus.bonus.setTexture(texture);
 	currentBonus.bonus.setOrigin(currentBonus.bonus.getGlobalBounds().width / 2, currentBonus.bonus.getGlobalBounds().height / 2);
+	currentBonus.bonus.setPosition(0, 0);
 	currentBonus.countBonuses = GetRandomNumber(20, 60);
 	currentBonus.needDraw = false;
 	return currentBonus;
 }
 
-void UpdateBonus(SBonus & bonus, sf::Int64 & time, float platformSpeed, sf::RectangleShape(&platforms)[10])
+void UpdateBonus(SBonus & bonus, sf::Int64 & time, float platformSpeed, SPlatform(&platforms)[10])
 {
 	Collision collisions = GetCollisionsBonus(bonus.bonus, platforms);
 	if (collisions.collisionDown)
@@ -27,20 +28,22 @@ void UpdateBonus(SBonus & bonus, sf::Int64 & time, float platformSpeed, sf::Rect
 	}
 }
 
-void CreateNewBonus(SBonus & bonus, const sf::RectangleShape & platform)
+void CreateNewBonus(SBonus & bonus, const sf::Sprite & platform)
 {
 	bonus.BonusType = GetRandomNumber(1, 3);
-	bonus.bonus.setPosition((float)GetRandomNumber((int)(platform.getGlobalBounds().left + bonus.bonus.getGlobalBounds().width / 2), (int)(platform.getGlobalBounds().left + platform.getGlobalBounds().width - bonus.bonus.getGlobalBounds().width / 2)), platform.getPosition().y - (bonus.bonus.getGlobalBounds().height / 2));
 	if (bonus.BonusType == 1)
 	{
-		bonus.bonus.setFillColor(sf::Color::Blue);
+		bonus.bonus.setTextureRect(sf::IntRect(2, 276, 123, 141));
 	}
 	else if (bonus.BonusType == 2)
 	{
-		bonus.bonus.setFillColor(sf::Color::Cyan);
+		bonus.bonus.setTextureRect(sf::IntRect(125, 277, 123, 134));
 	}
-	else
+	else if (bonus.BonusType == 3)
 	{
-		bonus.bonus.setFillColor(sf::Color::Magenta);
+		bonus.bonus.setTextureRect(sf::IntRect(254, 277, 130, 130));
 	}
+	bonus.bonus.setOrigin(bonus.bonus.getGlobalBounds().width / 2, bonus.bonus.getGlobalBounds().height / 2);
+	bonus.bonus.scale(0.25, 0.25);
+	bonus.bonus.setPosition((float)GetRandomNumber((int)(platform.getGlobalBounds().left + bonus.bonus.getGlobalBounds().width / 2), (int)(platform.getGlobalBounds().left + platform.getGlobalBounds().width - bonus.bonus.getGlobalBounds().width / 2)), platform.getPosition().y - (bonus.bonus.getGlobalBounds().height / 2));
 }

@@ -108,3 +108,9 @@ void UpdateProgressBar(sf::CircleShape(&liveBalls)[5], const struct SPlayer & pl
 	result += score;
 	scoreText.setString("Score: " + result);
 }
+
+void LoadSprite(sf::Image & img, sf::Texture & texture)
+{
+	img.loadFromFile("images/sprite.png");
+	texture.loadFromImage(img);
+}

@@ -2,8 +2,8 @@
 #include "Player.h"
 #include "Speed.h"
 
-float MAX_SPEED = 0.3;
-float MIN_SPEED = 0.1;
+float MAX_SPEED = 0.3f;
+float MIN_SPEED = 0.1f;
 int COEFFICIENT = 10000;
 
 float GetNewSpeed(float score, bool isBig)
