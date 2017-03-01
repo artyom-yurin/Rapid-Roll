@@ -10,9 +10,7 @@ void InitFont(sf::Font & font);
 
 void InitResultMessage(sf::Text & text, sf::Font const & font, int score);
 
-void InitMessage(sf::Text & text, sf::Font const & font, std::string const & message);
-
-void InitMessageSpace(sf::RectangleShape & messageSpace);
+sf::Sprite InitMessageSpace(sf::Texture & texture);
 
 void InitProgressBar(sf::RectangleShape & processBar, sf::CircleShape(&liveBalls)[5], int lives, sf::Text & scoreText, sf::Font const & font);
 

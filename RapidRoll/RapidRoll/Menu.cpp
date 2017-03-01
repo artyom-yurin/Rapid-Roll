@@ -55,22 +55,15 @@ void InitResultMessage(sf::Text & text, sf::Font const & font, int score)
 	text.setPosition(200, 200);
 }
 
-void InitMessage(sf::Text & text, sf::Font const & font, std::string const & message)
+sf::Sprite InitMessageSpace(sf::Texture & texture)
 {
-	text.setFont(font);
-	text.setCharacterSize(30);
-	text.setString(message);
-	text.setFillColor(sf::Color::Blue);
-	text.setOrigin(text.getGlobalBounds().width / 2, text.getGlobalBounds().height / 2);
-	text.setPosition(200, 400);
-}
-
-void InitMessageSpace(sf::RectangleShape & messageSpace)
-{
-	messageSpace.setSize({ 200, 150 });
-	messageSpace.setFillColor(sf::Color::Yellow);
+	sf::Sprite messageSpace;
+	messageSpace.setTexture(texture);
+	messageSpace.setTextureRect(sf::IntRect(446, 527, 579, 361));
 	messageSpace.setOrigin(messageSpace.getGlobalBounds().width / 2, messageSpace.getGlobalBounds().height / 2);
+	messageSpace.scale(0.5f, 0.5f);
 	messageSpace.setPosition(200, 400);
+	return messageSpace;
 }
 
 void InitLiveBalls(sf::CircleShape(&liveBalls)[5], int lives)

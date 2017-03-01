@@ -31,14 +31,13 @@ struct Application
 	// задний фон
 	sf::Sprite background;
 	// окно сообщений
-	sf::RectangleShape messageSpace;
+	sf::Sprite messageSpace;
 	// лого игры
 	sf::Sprite logoSpace;
 	// результат игры
 	sf::Sprite resultSpace;
 	sf::Event event;
 	sf::Font font;
-	sf::Text message;
 	sf::Text resultMessage;
 	sf::Text scoreText;
 
@@ -56,8 +55,7 @@ struct Application
 		LoadSprite(image, texture);
 		isPause = true;
 		InitFont(font);
-		InitMessage(message, font, "Press enter\nto start");
-		InitMessageSpace(messageSpace);
+		messageSpace = InitMessageSpace(texture);
 		background = InitBackground(texture);
 		logoSpace = InitLogo(texture);
 		resultSpace = InitResult(texture);
@@ -80,7 +78,7 @@ struct Application
 		if (!player.lives)
 		{
 			InitResultMessage(resultMessage, font, (int)player.score);
-			InitMessage(message, font, "Press enter\nto play again");
+			messageSpace.setTextureRect(sf::IntRect(1043, 527, 579, 361));
 		}
 	}
 
@@ -109,7 +107,6 @@ struct Application
 		if (!player.lives || isPause)
 		{
 			window.draw(messageSpace);
-			window.draw(message);
 			if (isPause)
 			{
 				window.draw(logoSpace);
@@ -139,7 +136,6 @@ struct Application
 						{
 							InitApplication();
 						}
-						InitMessage(message, font, "Press enter\nto start");
 					}
 				}
 			}

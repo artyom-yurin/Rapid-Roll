@@ -123,13 +123,23 @@ void UpdatePlayer(SPlayer & player, sf::Int64 & time, float & platformSpeed, SPl
 		{
 			if (player.ball.getPosition().x > player.ball.getGlobalBounds().width / 2 && !collisions.collisionLeft)
 			{
-				player.ball.move(-0.1f * time, 0);
+				float speed = -player.playerSpeed;
+				if (player.isBig)
+				{
+					speed /= 1.5f;
+				}
+				player.ball.move(speed * time, 0);
 			}
 		};
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right)) {
 			if (player.ball.getPosition().x < 400 - player.ball.getGlobalBounds().width / 2 && !collisions.collisionRight)
 			{
-				player.ball.move(0.1f * time, 0);
+				float speed = player.playerSpeed;
+				if (player.isBig)
+				{
+					speed /= 1.5f;
+				}
+				player.ball.move(speed * time, 0);
 			}
 		};
 		if (player.shield)
