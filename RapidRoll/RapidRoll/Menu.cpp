@@ -2,12 +2,24 @@
 #include "Player.h"
 #include "Menu.h"
 
-void InitSpace(sf::RectangleShape & logoSpace)
+sf::Sprite InitLogo(sf::Texture & texture)
 {
-	logoSpace.setSize({ 300, 200 });
-	logoSpace.setFillColor(sf::Color::Yellow);
+	sf::Sprite logoSpace;
+	logoSpace.setTexture(texture);
+	logoSpace.setTextureRect(sf::IntRect(641, 12, 845, 397));
 	logoSpace.setOrigin(logoSpace.getGlobalBounds().width / 2, logoSpace.getGlobalBounds().height / 2);
+	logoSpace.scale(0.45f, 0.45f);
 	logoSpace.setPosition(200, 200);
+	logoSpace.setRotation(-10.0f);
+	return logoSpace;
+}
+
+void InitSpace(sf::RectangleShape & space)
+{
+	space.setSize({ 300, 200 });
+	space.setFillColor(sf::Color::Yellow);
+	space.setOrigin(space.getGlobalBounds().width / 2, space.getGlobalBounds().height / 2);
+	space.setPosition(200, 200);
 }
 
 void InitFont(sf::Font & font)
