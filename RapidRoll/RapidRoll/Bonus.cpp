@@ -28,8 +28,9 @@ void UpdateBonus(SBonus & bonus, sf::Int64 & time, float platformSpeed, SPlatfor
 	}
 }
 
-void CreateNewBonus(SBonus & bonus, const sf::Sprite & platform)
+SBonus CreateNewBonus(const sf::Sprite & platform, const sf::Texture & texture)
 {
+	SBonus bonus = InitBonus(texture);
 	bonus.BonusType = GetRandomNumber(1, 3);
 	if (bonus.BonusType == 1)
 	{
@@ -46,4 +47,5 @@ void CreateNewBonus(SBonus & bonus, const sf::Sprite & platform)
 	bonus.bonus.setOrigin(bonus.bonus.getGlobalBounds().width / 2, bonus.bonus.getGlobalBounds().height / 2);
 	bonus.bonus.scale(0.25, 0.25);
 	bonus.bonus.setPosition((float)GetRandomNumber((int)(platform.getGlobalBounds().left + bonus.bonus.getGlobalBounds().width / 2), (int)(platform.getGlobalBounds().left + platform.getGlobalBounds().width - bonus.bonus.getGlobalBounds().width / 2)), platform.getPosition().y - (bonus.bonus.getGlobalBounds().height / 2));
+	return bonus;
 }

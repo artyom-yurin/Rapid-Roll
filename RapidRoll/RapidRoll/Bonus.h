@@ -12,4 +12,4 @@ SBonus InitBonus(sf::Texture const & texture);
 
 void UpdateBonus(SBonus & bonus, sf::Int64 & time, float platformSpeed, struct SPlatform(&platforms)[10]);
 
-void CreateNewBonus(SBonus & bonus, const sf::Sprite & platform);
+SBonus CreateNewBonus(const sf::Sprite & platform, const sf::Texture & texture);

@@ -30,7 +30,7 @@ SPlatform GeneratePlatform(sf::Vector2f & position, int & CountThorns, SBonus & 
 		}
 		else
 		{
-			CreateNewBonus(bonus, platform.platform);
+			bonus = CreateNewBonus(platform.platform, texture);
 			bonus.needDraw = true;
 			bonus.countBonuses = GetRandomNumber(20, 60);
 		}
