@@ -1,5 +1,7 @@
 #pragma once
 
+sf::Sprite InitBackground(sf::Texture & texture);
+
 sf::Sprite InitLogo(sf::Texture & texture);
 
 void InitSpace(sf::RectangleShape & space);

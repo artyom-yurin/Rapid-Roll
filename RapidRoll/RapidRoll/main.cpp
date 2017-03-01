@@ -28,6 +28,8 @@ struct Application
 	sf::CircleShape liveBalls[5];
 	// верхняя граница
 	sf::Sprite ceiling;
+	// задний фон
+	sf::Sprite background;
 	// окно сообщений
 	sf::RectangleShape messageSpace;
 	// лого игры
@@ -56,6 +58,7 @@ struct Application
 		InitFont(font);
 		InitMessage(message, font, "Press enter\nto start");
 		InitMessageSpace(messageSpace);
+		background = InitBackground(texture);
 		logoSpace = InitLogo(texture);
 		InitSpace(resultSpace);
 		bonus = InitBonus(texture);
@@ -83,6 +86,7 @@ struct Application
 
 	void Draw()
 	{
+		window.draw(background);
 		for (SPlatform platform : platforms)
 		{
 			window.draw(platform.platform);

@@ -2,15 +2,24 @@
 #include "Player.h"
 #include "Menu.h"
 
+sf::Sprite InitBackground(sf::Texture & texture)
+{
+	sf::Sprite backgroung;
+	backgroung.setTexture(texture);
+	backgroung.setTextureRect(sf::IntRect(15, 527, 400, 600));
+	backgroung.setOrigin(backgroung.getGlobalBounds().width / 2, backgroung.getGlobalBounds().height / 2);
+	backgroung.setPosition(200, 300);
+	return backgroung;
+}
+
 sf::Sprite InitLogo(sf::Texture & texture)
 {
 	sf::Sprite logoSpace;
 	logoSpace.setTexture(texture);
-	logoSpace.setTextureRect(sf::IntRect(641, 12, 845, 397));
+	logoSpace.setTextureRect(sf::IntRect(642, 4, 850, 410));
 	logoSpace.setOrigin(logoSpace.getGlobalBounds().width / 2, logoSpace.getGlobalBounds().height / 2);
 	logoSpace.scale(0.45f, 0.45f);
 	logoSpace.setPosition(200, 200);
-	logoSpace.setRotation(-10.0f);
 	return logoSpace;
 }
 
