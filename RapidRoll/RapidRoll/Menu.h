@@ -4,7 +4,7 @@ sf::Sprite InitBackground(sf::Texture & texture);
 
 sf::Sprite InitLogo(sf::Texture & texture);
 
-void InitSpace(sf::RectangleShape & space);
+sf::Sprite InitResult(sf::Texture & texture);
 
 void InitFont(sf::Font & font);
 

@@ -23,12 +23,15 @@ sf::Sprite InitLogo(sf::Texture & texture)
 	return logoSpace;
 }
 
-void InitSpace(sf::RectangleShape & space)
+sf::Sprite InitResult(sf::Texture & texture)
 {
-	space.setSize({ 300, 200 });
-	space.setFillColor(sf::Color::Yellow);
-	space.setOrigin(space.getGlobalBounds().width / 2, space.getGlobalBounds().height / 2);
-	space.setPosition(200, 200);
+	sf::Sprite resultSpace;
+	resultSpace.setTexture(texture);
+	resultSpace.setTextureRect(sf::IntRect(447, 905, 578, 360));
+	resultSpace.setOrigin(resultSpace.getGlobalBounds().width / 2, resultSpace.getGlobalBounds().height / 2);
+	resultSpace.scale(0.5f, 0.5f);
+	resultSpace.setPosition(200, 200);
+	return resultSpace;
 }
 
 void InitFont(sf::Font & font)
@@ -44,9 +47,10 @@ void InitResultMessage(sf::Text & text, sf::Font const & font, int score)
 {
 	text.setFont(font);
 	text.setCharacterSize(30);
-	std::string message = "Your score:\n" + std::to_string(score);
+	std::string message = std::to_string(score);
 	text.setString(message);
-	text.setFillColor(sf::Color::Blue);
+	text.setFillColor(sf::Color::White);
+	text.setStyle(sf::Text::Bold);
 	text.setOrigin(text.getGlobalBounds().width / 2, text.getGlobalBounds().height / 2);
 	text.setPosition(200, 200);
 }

@@ -35,7 +35,7 @@ struct Application
 	// лого игры
 	sf::Sprite logoSpace;
 	// результат игры
-	sf::RectangleShape resultSpace;
+	sf::Sprite resultSpace;
 	sf::Event event;
 	sf::Font font;
 	sf::Text message;
@@ -60,7 +60,7 @@ struct Application
 		InitMessageSpace(messageSpace);
 		background = InitBackground(texture);
 		logoSpace = InitLogo(texture);
-		InitSpace(resultSpace);
+		resultSpace = InitResult(texture);
 		bonus = InitBonus(texture);
 		InitMap(platforms, countThorns, platformSpeed, bonus, texture);
 		InitCeiling(ceiling, texture);
