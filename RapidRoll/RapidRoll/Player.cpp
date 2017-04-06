@@ -103,12 +103,6 @@ void UpdatePlayer(SPlayer & player, sf::Int64 & time, float & platformSpeed, SPl
 				}
 				player.status = Status::dead;
 			}
-			else
-			{
-				sf::Vector2f newPosition = { player.ball.getPosition().x, platforms[collisions.platformIndex].platform.getGlobalBounds().top };
-				newPosition += {0, -player.ball.getGlobalBounds().height / 2};
-				player.ball.setPosition(newPosition);
-			}
 		}
 
 		if (collisions.collisionExtreme)
