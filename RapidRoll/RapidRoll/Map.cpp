@@ -49,11 +49,11 @@ void InitMap(SPlatform(&platforms)[10], int & CountThorns, float & platformSpeed
 	for (int i = 1; i < 10; ++i)
 	{
 		position.x = platforms[i - 1].platform.getPosition().x;
-		if (position.x = 50)
+		if (position.x == 50)
 		{
 			position.x += (float)GetRandomNumber(50, 200);
 		}
-		else if (position.x = 350)
+		else if (position.x == 350)
 		{
 			position.x += (float)GetRandomNumber(-200, -50);
 		}
@@ -96,11 +96,11 @@ void UpdateMap(SPlatform(&platforms)[10], sf::Int64 & time, float & platformSpee
 		}
 		sf::Vector2f position;
 		position.x = platforms[8].platform.getPosition().x;
-		if (position.x = 50)
+		if (position.x == 50)
 		{
 			position.x += (float)GetRandomNumber(50, 200);
 		}
-		else if (position.x = 350)
+		else if (position.x == 350)
 		{
 			position.x += (float)GetRandomNumber(-200, -50);
 		}
