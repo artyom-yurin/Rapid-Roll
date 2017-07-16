@@ -43,23 +43,23 @@ void InitMap(SPlatform(&platforms)[10], int & CountThorns, float & platformSpeed
 	CountThorns = GetRandomNumber(2, 10);
 	platformSpeed = -0.1f;
 	sf::Vector2f position;
-	position.x = (float)200;
-	position.y = (float)300;
+	position.x = 200.f;
+	position.y = 300.f;
 	platforms[0] = GeneratePlatform(position, CountThorns, bonus, texture);
 	for (int i = 1; i < 10; ++i)
 	{
 		position.x = platforms[i - 1].platform.getPosition().x;
 		if (position.x == 50)
 		{
-			position.x += (float)GetRandomNumber(50, 200);
+			position.x += GetRandomNumber(50, 200);
 		}
 		else if (position.x == 350)
 		{
-			position.x += (float)GetRandomNumber(-200, -50);
+			position.x += GetRandomNumber(-200, -50);
 		}
 		else
 		{
-			position.x += (float)GetRandomNumber(-200, 200);
+			position.x += GetRandomNumber(-200, 200);
 			if (position.x < 50)
 			{
 				position.x = 50;
@@ -69,7 +69,7 @@ void InitMap(SPlatform(&platforms)[10], int & CountThorns, float & platformSpeed
 				position.x = 350;
 			}
 		}
-		position.y = (float)200 + 100 * (i + 1);
+		position.y = 200.f + 100 * (i + 1);
 		platforms[i] = GeneratePlatform(position, CountThorns, bonus, texture);
 	}
 }
@@ -98,15 +98,15 @@ void UpdateMap(SPlatform(&platforms)[10], sf::Int64 & time, float & platformSpee
 		position.x = platforms[8].platform.getPosition().x;
 		if (position.x == 50)
 		{
-			position.x += (float)GetRandomNumber(50, 200);
+			position.x += GetRandomNumber(50, 200);
 		}
 		else if (position.x == 350)
 		{
-			position.x += (float)GetRandomNumber(-200, -50);
+			position.x += GetRandomNumber(-200, -50);
 		}
 		else
 		{
-			position.x += (float)GetRandomNumber(-200, 200);
+			position.x += GetRandomNumber(-200, 200);
 			if (position.x < 50)
 			{
 				position.x = 50;
@@ -116,7 +116,7 @@ void UpdateMap(SPlatform(&platforms)[10], sf::Int64 & time, float & platformSpee
 				position.x = 350;
 			}
 		}
-		position.y = (float)100 * 9;
+		position.y = 900.f;
 		platforms[9] = GeneratePlatform(position, countThorns, bonus, texture);
 	}
 }
